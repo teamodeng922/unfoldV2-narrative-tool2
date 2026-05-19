@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { femaleLines, maleLines } from "@/src/panels/plot-panel";
 import type { GenderDirection } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
@@ -20,11 +20,7 @@ const plotKeys = ["opening", "develop", "climax", "ending"] as const;
 
 export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
   const lines = gender === "female" ? femaleLines : maleLines;
-  const [openLineIds, setOpenLineIds] = useState<string[]>(() => lines.map((line) => line.id));
-
-  useEffect(() => {
-    setOpenLineIds(lines.map((line) => line.id));
-  }, [lines]);
+  const [collapsedLineIds, setCollapsedLineIds] = useState<string[]>([]);
 
   return (
     <div className="w-full py-4">
@@ -33,14 +29,14 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
       </h3>
       <div className="grid gap-4">
         {lines.map((line) => {
-          const opened = openLineIds.includes(line.id);
+          const opened = !collapsedLineIds.includes(line.id);
 
           return (
             <article key={line.id} className="rounded-lg border border-white/10 bg-[#111217]">
               <button
                 type="button"
                 onClick={() =>
-                  setOpenLineIds((current) =>
+                  setCollapsedLineIds((current) =>
                     current.includes(line.id)
                       ? current.filter((item) => item !== line.id)
                       : [...current, line.id],
