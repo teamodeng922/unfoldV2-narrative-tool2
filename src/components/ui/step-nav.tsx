@@ -23,7 +23,7 @@ export function StepNav({ current, done, steps, onSelect }: StepNavProps) {
             type="button"
             onClick={() => onSelect(step.id)}
             className={[
-              "grid h-10 w-full grid-cols-[24px_minmax(76px,1fr)_18px] items-center gap-2 rounded-none border-l-2 border-y-0 border-r-0 px-3 text-left transition",
+              "grid h-10 w-full grid-cols-[24px_minmax(70px,1fr)_16px] items-center gap-2 rounded-none border-l-2 border-y-0 border-r-0 px-3 text-left transition",
               active
                 ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] opacity-100"
                 : "border-transparent bg-transparent hover:bg-[#111217]",
@@ -47,7 +47,7 @@ export function StepNav({ current, done, steps, onSelect }: StepNavProps) {
             >
               {step.label}
             </span>
-            <span className="flex justify-end text-[#2F8CFF]">
+            <span className="flex justify-center pr-1 text-[#2F8CFF]">
               {completed ? <AppIcon name="check" size={13} strokeWidth={2.6} /> : null}
             </span>
           </button>
