@@ -17,10 +17,44 @@ const plotLabels = {
 };
 
 const plotKeys = ["opening", "develop", "climax", "ending"] as const;
+type PlotKey = (typeof plotKeys)[number];
+type PlotValues = Record<PlotKey, string>;
+
+const generatedLineSets: PlotValues[] = [
+  {
+    opening: "一次意外让你们被迫同行，最初的试探里藏着彼此都不肯说破的戒备。",
+    develop: "共同经历让关系逐渐松动，他开始把隐秘的软肋交到你手中。",
+    climax: "危机逼近时，你们必须在信任与自保之间做出选择，任何迟疑都会改变结局。",
+    ending: "若你们站在同一边，这条线会走向并肩；若选择错过，余下的只会成为遗憾。",
+  },
+  {
+    opening: "你在最狼狈的时刻撞见他，也撞见了这座城最不该被看见的秘密。",
+    develop: "他一边推开你，一边又在暗处替你清路，关系因此变得危险又暧昧。",
+    climax: "旧案翻出真相，你们曾经依赖的理由被彻底撕开，只剩最后一次选择。",
+    ending: "你可以把他拉回人间，也可以亲手结束这段互相牵制的命运。",
+  },
+  {
+    opening: "一个看似普通的约定成为起点，你们从互相利用开始走进彼此的生活。",
+    develop: "日常互动积累出细小信任，连沉默都开始有了只有你们懂的含义。",
+    climax: "当外部压力集中爆发，他必须公开立场，而你也要决定是否回应这份偏爱。",
+    ending: "这条线会根据你的选择收束为守护、分离，或一场迟来的坦白。",
+  },
+];
+
+function generateLineValues(title: string, seed: number) {
+  const base = generatedLineSets[seed % generatedLineSets.length];
+  return {
+    opening: `${title}：${base.opening}`,
+    develop: base.develop,
+    climax: base.climax,
+    ending: base.ending,
+  };
+}
 
 export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
   const lines = gender === "female" ? femaleLines : maleLines;
   const [collapsedLineIds, setCollapsedLineIds] = useState<string[]>([]);
+  const [lineSeeds, setLineSeeds] = useState<Record<string, number>>({});
 
   return (
     <div className="w-full py-4">
@@ -30,6 +64,8 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
       <div className="grid gap-4">
         {lines.map((line) => {
           const opened = !collapsedLineIds.includes(line.id);
+          const seed = lineSeeds[line.id] ?? 0;
+          const values = seed > 0 ? generateLineValues(line.title, seed - 1) : line.values;
 
           return (
             <article key={line.id} className="rounded-lg border border-white/10 bg-[#111217]">
@@ -57,9 +93,22 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
                       <p className="mb-1 text-[13px] font-semibold text-[#2F8CFF]">
                         {plotLabels[key]}
                       </p>
-                      <p className="text-[13px] leading-6 text-white/60">{line.values[key]}</p>
+                      <p className="text-[13px] leading-6 text-white/60">{values[key]}</p>
                     </div>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setLineSeeds((current) => ({
+                        ...current,
+                        [line.id]: (current[line.id] ?? 0) + 1,
+                      }))
+                    }
+                    className="justify-self-start rounded-lg border border-white/10 bg-[#111217] px-3 py-2 text-[13px] text-white/55 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
+                  >
+                    <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
+                    重新生成
+                  </button>
                 </div>
               ) : null}
             </article>
