@@ -5,6 +5,7 @@ import { GAME_TYPES } from "@/src/data/game-types";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { EditorMode, GameTypeId } from "@/src/types";
 import { AppIcon, type AppIconName } from "@/src/components/ui/app-icon";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 
 type MechanicPanelProps = {
   mode: EditorMode;
@@ -28,9 +29,7 @@ export function MechanicPanel(_props: MechanicPanelProps) {
   return (
     <div className="py-4">
       <div className="mb-5">
-        <h3 className="mb-1 text-[14px] font-semibold tracking-[0.04em] text-white/64">
-          推荐玩法
-        </h3>
+        <NumberedTitle className="mb-1" num="01">推荐玩法</NumberedTitle>
         <p className="text-[13px] text-white/40">{worldType} 默认适配的玩法组合</p>
       </div>
 

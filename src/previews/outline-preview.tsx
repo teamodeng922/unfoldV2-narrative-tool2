@@ -6,6 +6,7 @@ import { RegenButton } from "@/src/components/ui/regen-button";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { EditorMode } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 
 type OutlinePreviewProps = {
   mode: EditorMode;
@@ -34,7 +35,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
     <div className="w-full py-4">
       <section className="mb-6">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.02em] text-white/55">游戏名称</h3>
+          <NumberedTitle className="mb-0 text-white/55" num="01">游戏名称</NumberedTitle>
         </div>
 
         {mode === "pro" ? (
@@ -51,7 +52,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
       </section>
 
       <section className="mb-6">
-        <h3 className="mb-3 text-[14px] font-semibold tracking-[0.02em] text-white/55">世界大纲</h3>
+        <NumberedTitle className="text-white/55" num="02">世界大纲</NumberedTitle>
         <div className="grid grid-cols-3 gap-3">
           {outlines.map((outline) => {
             const active = outline.id === selectedOutline.id;
@@ -85,7 +86,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
 
       <section className="mb-6">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.02em] text-white/55">大纲详情</h3>
+          <NumberedTitle className="mb-0 text-white/55" num="03">大纲详情</NumberedTitle>
           {mode === "pro" ? (
             <button
               type="button"
