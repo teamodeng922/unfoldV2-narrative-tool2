@@ -154,7 +154,7 @@ export function AimengPreflow({
           AIMENG · AI NATIVE GAME ENGINE
         </div>
         <h1 className="mb-3 text-center font-serif text-[32px] font-semibold leading-tight tracking-[0.02em] text-white">
-          欢迎来到 AIMENG
+          欢迎来到 开卷 unfold
         </h1>
         <p className="max-w-[560px] text-center text-[14px] leading-7 text-white/55">
           这不是一款游戏，是一台能做出无数游戏的引擎。
