@@ -1,6 +1,6 @@
 "use client";
 
-import { AppIcon } from "@/src/components/ui/app-icon";
+import { RegenButton } from "@/src/components/ui/regen-button";
 
 type RegenFieldProps = {
   label: string;
@@ -14,9 +14,7 @@ export function RegenField({ label, value, onChange, labelClassName }: RegenFiel
     <div className="mb-4">
       <div className="mb-1.5 flex items-center justify-between">
         <label className={labelClassName ?? "text-[14px] font-semibold text-white/55"}>{label}</label>
-        <button type="button" className="text-[13px] text-white/42 transition hover:text-[#2F8CFF]">
-          <AppIcon name="refresh-cw" size={13} />
-        </button>
+        <RegenButton iconOnly aria-label="重新生成" />
       </div>
       <input
         value={value}

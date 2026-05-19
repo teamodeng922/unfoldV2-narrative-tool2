@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { ReadOnlyField } from "@/src/components/ui/read-only-field";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { RegenField } from "@/src/components/ui/regen-field";
 import type { EditorMode, GenderDirection } from "@/src/types";
-import { AppIcon } from "@/src/components/ui/app-icon";
 
 type PlotPanelProps = {
   mode: EditorMode;
@@ -99,10 +99,7 @@ export function PlotPanel({ mode, gender }: PlotPanelProps) {
             <ReadOnlyField key={key} label={plotLabels[key]} value={mainPlot[key]} labelClassName={plotLabelClassName} />
           ),
         )}
-        <button type="button" className="rounded-lg border border-white/[0.10] bg-[#111217] px-4 py-2 text-[14px] text-white/62 transition hover:text-[#2F8CFF]">
-          <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={14} />
-          {mode === "pro" ? "全部重新生成" : "重新生成"}
-        </button>
+        <RegenButton>{mode === "pro" ? "全部重新生成" : "重新生成"}</RegenButton>
       </section>
     </div>
   );

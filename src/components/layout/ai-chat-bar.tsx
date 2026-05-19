@@ -94,8 +94,8 @@ export function AiChatBar() {
   };
 
   return (
-    <section className="h-[220px] shrink-0 border-b border-[#2F8CFF]/20 bg-[#050509] px-5 py-3">
-      <div className="mx-auto flex h-full max-w-[1540px] flex-col gap-3 rounded-xl border border-[#2F8CFF]/45 bg-[linear-gradient(180deg,rgba(47,140,255,0.12),rgba(11,13,19,0.96)_34%,rgba(7,9,14,0.98))] p-4 shadow-[0_0_0_1px_rgba(56,213,255,0.08),0_0_34px_rgba(47,140,255,0.22),0_22px_64px_rgba(0,0,0,0.38)]">
+    <section className="h-[220px] shrink-0 bg-[#050509] px-5 py-3">
+      <div className="mx-auto flex h-full max-w-[1540px] flex-col gap-3 rounded-xl bg-[linear-gradient(180deg,rgba(47,140,255,0.12),rgba(11,13,19,0.94)_34%,rgba(7,9,14,0.98))] p-4 shadow-[inset_0_0_0_1px_rgba(47,140,255,0.22),0_0_34px_rgba(47,140,255,0.18),0_22px_64px_rgba(0,0,0,0.38)]">
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           <div className="flex flex-col gap-2">
             {messages.map((item) => (
@@ -104,8 +104,8 @@ export function AiChatBar() {
                 className={[
                   "max-w-[72%] rounded-md px-3.5 py-2.5 text-[13px] leading-5 shadow-[0_10px_28px_rgba(0,0,0,0.18)]",
                   item.role === "user"
-                    ? "ml-auto border border-[#2F8CFF]/55 bg-[#0D2B52]/90 text-white"
-                    : "mr-auto border border-[#2F8CFF]/18 bg-[#111827] text-white/70",
+                    ? "ml-auto bg-[#0D2B52]/90 text-white shadow-[inset_0_0_0_1px_rgba(47,140,255,0.35)]"
+                    : "mr-auto bg-[#111827] text-white/70 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]",
                 ].join(" ")}
               >
                 <span className="mr-2 inline text-[12px] font-semibold text-[#2F8CFF]">
@@ -116,8 +116,8 @@ export function AiChatBar() {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-lg border border-white/[0.10] bg-black/20 p-2">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[#2F8CFF]/55 bg-[#2F8CFF]/18 text-[13px] font-bold text-[#38D5FF] shadow-[0_0_18px_rgba(47,140,255,0.22)]">
+        <div className="flex items-center gap-3 rounded-lg bg-black/18 p-2 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#2F8CFF]/18 text-[13px] font-bold text-[#38D5FF] shadow-[inset_0_0_0_1px_rgba(47,140,255,0.45),0_0_18px_rgba(47,140,255,0.18)]">
           AI
         </div>
         <div className="flex-1">

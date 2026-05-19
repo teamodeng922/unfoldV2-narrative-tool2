@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import {
   FEMALE_HEROINE_TYPES,
   HEROINE_INNER_TAGS,
@@ -58,9 +59,7 @@ function TagPicker({
       <div className="mb-2 flex items-center justify-between">
         <FieldLabel>{title}</FieldLabel>
         <div className="flex items-center gap-2">
-          <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
-            <AppIcon name="refresh-cw" size={13} />
-          </button>
+          <RegenButton iconOnly aria-label="重新生成" />
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}
@@ -112,9 +111,7 @@ function TextAreaField({
     <div className="mb-4">
       <div className="mb-1.5 flex items-center justify-between">
         <FieldLabel>{label}</FieldLabel>
-        <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
-          <AppIcon name="refresh-cw" size={13} />
-        </button>
+        <RegenButton iconOnly aria-label="重新生成" />
       </div>
       <input
         value={value}

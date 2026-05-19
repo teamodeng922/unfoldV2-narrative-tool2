@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { femaleLines, maleLines } from "@/src/panels/plot-panel";
 import type { GenderDirection } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
@@ -93,10 +94,10 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
                       <p className="mb-1 text-[13px] font-semibold text-[#2F8CFF]">
                         {plotLabels[key]}
                       </p>
-                      <p className="text-[13px] leading-6 text-white/64">{values[key]}</p>
+                      <p className="text-[13px] leading-5 text-white/64">{values[key]}</p>
                     </div>
                   ))}
-                  <button
+                  <RegenButton
                     type="button"
                     onClick={() =>
                       setLineSeeds((current) => ({
@@ -104,11 +105,9 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
                         [line.id]: (current[line.id] ?? 0) + 1,
                       }))
                     }
-                    className="justify-self-start rounded-lg border border-white/[0.10] bg-[#111217] px-3 py-2 text-[13px] text-white/62 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
                   >
-                    <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
                     重新生成
-                  </button>
+                  </RegenButton>
                 </div>
               ) : null}
             </article>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { HERO_INNER_TAGS, HERO_OUTER_TAGS, MALE_HERO_TYPES } from "@/src/data/hero-types";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { EditorMode, GenderDirection, HeroCharacter } from "@/src/types";
@@ -107,9 +108,7 @@ function TagPicker({
       <div className="mb-2 flex items-center justify-between">
         <FieldLabel>{title}</FieldLabel>
         <div className="flex items-center gap-2">
-          <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
-            <AppIcon name="refresh-cw" size={13} />
-          </button>
+          <RegenButton iconOnly aria-label="重新生成" />
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}
@@ -161,9 +160,7 @@ function TextAreaField({
     <div className="mb-4">
       <div className="mb-1.5 flex items-center justify-between">
         <FieldLabel>{label}</FieldLabel>
-        <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
-          <AppIcon name="refresh-cw" size={13} />
-        </button>
+        <RegenButton iconOnly aria-label="重新生成" />
       </div>
       <input
         value={value}
@@ -227,14 +224,13 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
               <p className="text-[14px] leading-6 text-white/64">{value}</p>
             </div>
           ))}
-          <button
+          <RegenButton
             type="button"
             onClick={regenerateActiveHero}
-            className="mt-1 inline-flex h-8 items-center rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[13px] text-white/62 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
+            className="mt-1"
           >
-            <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
             重新生成
-          </button>
+          </RegenButton>
         </article>
         <div className="mt-6 flex justify-center">
           <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">

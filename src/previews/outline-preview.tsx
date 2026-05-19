@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { DEFAULT_OUTLINES, OUTLINES_MAP } from "@/src/data/outlines";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { EditorMode } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
@@ -142,13 +143,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
       </section>
 
       <div className="flex justify-center">
-        <button
-          type="button"
-          className="rounded-md border border-white/[0.10] bg-[#111217] px-4 py-2 text-[13px] text-white/62 transition hover:bg-[#191D25] hover:text-[#2F8CFF]"
-        >
-          <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
-          重新生成
-        </button>
+        <RegenButton>重新生成</RegenButton>
       </div>
     </div>
   );

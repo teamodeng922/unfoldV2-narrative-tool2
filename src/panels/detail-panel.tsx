@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { ENDINGS } from "@/src/data/endings";
 import { DEFAULT_STAT_SKIN, STAT_SKINS } from "@/src/data/stat-skins";
 import { useEditorStore } from "@/src/stores/editor-store";
@@ -98,9 +99,7 @@ function StatEditor({
           <p className="mb-2 text-[13px] text-white/42">通用定位：{stat.base}</p>
           <div className="mb-1.5 flex items-center justify-between">
             <label className="text-[14px] font-semibold text-white/55">本世界说明</label>
-            <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
-              <AppIcon name="refresh-cw" size={13} />
-            </button>
+            <RegenButton iconOnly aria-label="重新生成" />
           </div>
           <input
             value={stat.desc}
@@ -184,10 +183,7 @@ export function DetailPanel({ mode, worldType, mechTypes }: DetailPanelProps) {
           <div className="rounded-lg border border-white/[0.10] bg-[#111217] p-4 text-[14px] text-white/70">自由多线，修罗场与争风吃醋事件开启</div>
         </section>
         <div className="flex justify-center gap-3">
-          <button type="button" className="rounded-lg border border-white/[0.10] bg-[#111217] px-4 py-2 text-[14px] text-white/62">
-            <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={14} />
-            重新生成
-          </button>
+          <RegenButton>重新生成</RegenButton>
           <button type="button" onClick={() => goNext("detail")} className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]">
             确认玩法细节
             <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
