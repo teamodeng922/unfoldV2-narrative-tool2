@@ -1,0 +1,133 @@
+diff --git a/app/globals.css b/app/globals.css
+index a2dc41e..ada46ec 100644
+--- a/app/globals.css
++++ b/app/globals.css
+@@ -1,26 +1,116 @@
+ @import "tailwindcss";
+ 
+ :root {
+-  --background: #ffffff;
+-  --foreground: #171717;
++  --background: #0a0a0f;
++  --foreground: rgba(255, 255, 255, 0.9);
++  --font-noto-sans-sc: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
++  --font-noto-serif-sc: "Noto Serif SC", "Songti SC", serif;
++  --soft-gold: #d4b886;
++  --zero-blue: #a4b8d6;
+ }
+ 
+ @theme inline {
+   --color-background: var(--background);
+   --color-foreground: var(--foreground);
+-  --font-sans: var(--font-geist-sans);
+-  --font-mono: var(--font-geist-mono);
+-}
+-
+-@media (prefers-color-scheme: dark) {
+-  :root {
+-    --background: #0a0a0a;
+-    --foreground: #ededed;
+-  }
++  --font-sans: var(--font-noto-sans-sc);
++  --font-serif: var(--font-noto-serif-sc);
+ }
+ 
+ body {
+   background: var(--background);
+   color: var(--foreground);
+-  font-family: Arial, Helvetica, sans-serif;
++  font-family: var(--font-noto-sans-sc);
++}
++
++* {
++  box-sizing: border-box;
++}
++
++::-webkit-scrollbar {
++  height: 4px;
++  width: 4px;
++}
++
++::-webkit-scrollbar-track {
++  background: transparent;
++}
++
++::-webkit-scrollbar-thumb {
++  background: rgba(255, 255, 255, 0.08);
++  border-radius: 2px;
++}
++
++body {
++  text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.55);
++}
++
++button {
++  text-shadow: inherit;
++}
++
++input,
++textarea {
++  background: transparent !important;
++  border-width: 0 0 1px 0 !important;
++  border-color: rgba(255, 255, 255, 0.14) !important;
++  border-radius: 0 !important;
++  box-shadow: none !important;
++}
++
++button[class*="bg-white"],
++button[class*="bg-[rgba"],
++label[class*="bg-white"],
++label[class*="bg-[rgba"],
++article[class*="bg-white"],
++article[class*="bg-[rgba"],
++div[class*="bg-white"],
++div[class*="bg-[rgba"] {
++  background-color: transparent !important;
++}
++
++button[class*="border"],
++label[class*="border"],
++article[class*="border"],
++div[class*="border"],
++section[class*="border"],
++header[class*="border"],
++footer[class*="border"],
++aside[class*="border"] {
++  border-color: transparent !important;
++}
++
++.air-surface {
++  background: transparent !important;
++  border-color: transparent !important;
++  box-shadow: none !important;
++}
++
++.air-icon {
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++  color: rgba(255, 255, 255, 0.58);
++}
++
++.air-icon svg {
++  width: 1em;
++  height: 1em;
++  fill: none;
++  stroke: currentColor;
++  stroke-width: 1.25;
++  stroke-linecap: round;
++  stroke-linejoin: round;
++}
++
++.air-icon-active {
++  color: rgba(255, 255, 255, 1);
++  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.18));
++}
++
++.air-icon-gold {
++  color: rgba(212, 184, 134, 0.82);
++}
++
++.air-text-shadow {
++  text-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.7);
+ }
