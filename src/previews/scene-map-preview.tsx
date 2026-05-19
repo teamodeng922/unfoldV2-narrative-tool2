@@ -11,7 +11,7 @@ const locations = [
 export function SceneMapPreview() {
   return (
     <div className="w-full py-4">
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-white/10 bg-[linear-gradient(135deg,#17100d,#050509_55%,#161314)]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-white/[0.10] bg-[linear-gradient(135deg,#17100d,#050509_55%,#161314)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,rgba(47,140,255,0.16),transparent_32%),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:auto,48px_48px,48px_48px]" />
         <div className="absolute left-[18%] top-[18%] h-[58%] w-[64%] rounded-[30%] border border-[rgba(47,140,255,0.18)] bg-[rgba(47,140,255,0.04)]" />
         <div className="absolute left-[34%] top-[34%] h-[28%] w-[34%] rounded-lg border border-[rgba(47,140,255,0.18)] bg-black/20" />
@@ -25,7 +25,7 @@ export function SceneMapPreview() {
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         {locations.map((location, index) => (
-          <article key={location.name} className="overflow-hidden rounded-lg border border-white/10 bg-[#111217]">
+          <article key={location.name} className="overflow-hidden rounded-lg border border-white/[0.10] bg-[#111217]">
             <div
               className="aspect-video"
               style={{
@@ -34,7 +34,7 @@ export function SceneMapPreview() {
             />
             <div className="p-3">
               <p className="text-[14px] font-semibold text-white">{location.name}</p>
-              <p className="mt-1 text-[13px] text-white/35">16:9 场景缩略图</p>
+              <p className="mt-1 text-[13px] text-white/42">16:9 场景缩略图</p>
             </div>
           </article>
         ))}

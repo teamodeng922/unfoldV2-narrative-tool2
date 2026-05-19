@@ -75,7 +75,7 @@ function heroLine(hero: HeroCharacter) {
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <div className="mb-1.5 text-[14px] font-semibold text-white/58">{children}</div>;
+  return <div className="mb-1.5 text-[14px] font-semibold text-white/55">{children}</div>;
 }
 
 function TagPicker({
@@ -107,7 +107,7 @@ function TagPicker({
       <div className="mb-2 flex items-center justify-between">
         <FieldLabel>{title}</FieldLabel>
         <div className="flex items-center gap-2">
-          <button type="button" className="text-[13px] text-white/35 hover:text-[#2F8CFF]">
+          <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
             <AppIcon name="refresh-cw" size={13} />
           </button>
           <button
@@ -132,7 +132,7 @@ function TagPicker({
                 "inline-flex h-8 items-center rounded-full border px-3 text-[14px] leading-none transition",
                 active
                   ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]"
-                  : "border-white/10 bg-[#141720] text-white/55",
+                  : "border-white/[0.10] bg-[#141720] text-white/62",
               ].join(" ")}
             >
               {tag}
@@ -141,7 +141,7 @@ function TagPicker({
         })}
         <input
           placeholder="自由输入"
-          className="h-8 w-24 rounded-full border border-white/10 bg-[#111217] px-3 text-[14px] leading-none text-white/70 outline-none placeholder:text-white/25 focus:border-[#2F8CFF]/45"
+          className="h-8 w-24 rounded-full border border-white/[0.10] bg-[#111217] px-3 text-[14px] leading-none text-white/70 outline-none placeholder:text-white/42 focus:border-[#2F8CFF]/45"
         />
       </div>
     </section>
@@ -161,14 +161,14 @@ function TextAreaField({
     <div className="mb-4">
       <div className="mb-1.5 flex items-center justify-between">
         <FieldLabel>{label}</FieldLabel>
-        <button type="button" className="text-[13px] text-white/35 hover:text-[#2F8CFF]">
+        <button type="button" className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
           <AppIcon name="refresh-cw" size={13} />
         </button>
       </div>
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-10 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-[#E6E1D8] outline-none focus:border-[#2F8CFF]/45"
+        className="h-10 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-[#E6E1D8] outline-none focus:border-[#2F8CFF]/45"
       />
     </div>
   );
@@ -180,7 +180,6 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
   const setActiveHeroId = useEditorStore((state) => state.setActiveHeroId);
   const updateHero = useEditorStore((state) => state.updateHero);
   const addHero = useEditorStore((state) => state.addHero);
-  const goNext = useEditorStore((state) => state.goNext);
   const [batchIndex, setBatchIndex] = useState(0);
   const activeHero = heroes.find((hero) => hero.id === activeHeroId) ?? heroes[0];
   const names = nameBatches[batchIndex % nameBatches.length];
@@ -203,14 +202,14 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
                 "inline-flex h-8 items-center rounded-full border px-3 text-[14px] leading-none",
                 hero.id === activeHero.id
                   ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]"
-                  : "border-white/10 bg-[#141720] text-white/55",
+                  : "border-white/[0.10] bg-[#141720] text-white/62",
               ].join(" ")}
             >
               男主{index + 1}
             </button>
           ))}
           {heroes.length < 5 ? (
-            <button type="button" onClick={addHero} className="rounded-full border border-white/10 px-3 py-1.5 text-white/50">
+            <button type="button" onClick={addHero} className="rounded-full border border-white/[0.10] px-3 py-1.5 text-white/55">
               <AppIcon name="plus" size={14} />
             </button>
           ) : null}
@@ -225,20 +224,20 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
           ].map(([label, value]) => (
             <div key={label} className="mb-3">
               <FieldLabel>{label}</FieldLabel>
-              <p className="text-[14px] leading-6 text-white/60">{value}</p>
+              <p className="text-[14px] leading-6 text-white/64">{value}</p>
             </div>
           ))}
           <button
             type="button"
             onClick={regenerateActiveHero}
-            className="mt-1 inline-flex h-8 items-center rounded-lg border border-white/10 bg-[#111217] px-3 text-[13px] text-white/55 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
+            className="mt-1 inline-flex h-8 items-center rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[13px] text-white/62 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
           >
             <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
             重新生成
           </button>
         </article>
         <div className="mt-6 flex justify-center">
-          <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button" onClick={() => goNext("hero")}>
+          <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
             生成立绘
             <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
           </button>
@@ -259,14 +258,14 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
               "inline-flex h-8 items-center rounded-full border px-3 text-[14px] leading-none",
               hero.id === activeHero.id
                 ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]"
-                : "border-white/10 bg-[#141720] text-white/55",
+                : "border-white/[0.10] bg-[#141720] text-white/62",
             ].join(" ")}
           >
             男主{index + 1}
           </button>
         ))}
         {heroes.length < 5 ? (
-          <button type="button" onClick={addHero} className="rounded-full border border-white/10 px-3 py-1.5 text-white/50">
+          <button type="button" onClick={addHero} className="rounded-full border border-white/[0.10] px-3 py-1.5 text-white/55">
             <AppIcon name="plus" size={14} />
           </button>
         ) : null}
@@ -286,20 +285,20 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
                 "inline-flex h-8 items-center rounded-full border px-3 text-[14px] leading-none",
                 activeHero.name === name
                   ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]"
-                  : "border-white/10 bg-[#141720] text-white/55",
+                  : "border-white/[0.10] bg-[#141720] text-white/62",
               ].join(" ")}
             >
               {name}
             </button>
           ))}
-          <button type="button" onClick={() => setBatchIndex((value) => value + 1)} className="text-[13px] text-white/35 hover:text-[#2F8CFF]">
+          <button type="button" onClick={() => setBatchIndex((value) => value + 1)} className="text-[13px] text-white/42 hover:text-[#2F8CFF]">
             <AppIcon className="mr-1 inline-block align-[-2px]" name="refresh-cw" size={13} />
             换一批
           </button>
           <input
             value={activeHero.name}
             onChange={(event) => updateHero(activeHero.id, { name: event.target.value })}
-            className="h-8 w-28 rounded-lg border border-white/10 bg-[#111217] px-3 text-[13px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
+            className="h-8 w-28 rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[13px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
           />
         </div>
       </div>
@@ -309,7 +308,7 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
         <input
           value={activeHero.age}
           onChange={(event) => updateHero(activeHero.id, { age: event.target.value })}
-          className="h-9 w-24 rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
+          className="h-9 w-24 rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
         />
       </div>
 
@@ -319,14 +318,14 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
       <TextAreaField label="外貌特征" value={activeHero.appearance} onChange={(appearance) => updateHero(activeHero.id, { appearance })} />
 
       <div className="mb-5 flex items-center gap-3">
-        <div className="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-white/15 bg-[#111217] text-[13px] text-white/30">
+        <div className="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-white/[0.14] bg-[#111217] text-[13px] text-white/40">
           上传
         </div>
-        <p className="text-[13px] leading-5 text-white/35">64×96 角色立绘上传区</p>
+        <p className="text-[13px] leading-5 text-white/42">64×96 角色立绘上传区</p>
       </div>
 
       <div className="flex justify-center">
-        <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button" onClick={() => goNext("hero")}>
+        <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
           生成立绘
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
         </button>
@@ -342,7 +341,6 @@ function MaleHeroPanel({ mode }: { mode: EditorMode }) {
   const maleHeroAppearance = useEditorStore((state) => state.maleHeroAppearance);
   const setMaleHeroType = useEditorStore((state) => state.setMaleHeroType);
   const setMaleHeroField = useEditorStore((state) => state.setMaleHeroField);
-  const goNext = useEditorStore((state) => state.goNext);
   const selectedType = useMemo(
     () => MALE_HERO_TYPES.find((item) => item.id === maleHeroType) ?? MALE_HERO_TYPES[0],
     [maleHeroType],
@@ -354,7 +352,7 @@ function MaleHeroPanel({ mode }: { mode: EditorMode }) {
       {mode === "pro" ? (
         <div className="mb-4">
           <FieldLabel>年龄</FieldLabel>
-          <input value={maleHeroAge} onChange={(event) => setMaleHeroField("maleHeroAge", event.target.value)} className="h-9 w-24 rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
+          <input value={maleHeroAge} onChange={(event) => setMaleHeroField("maleHeroAge", event.target.value)} className="h-9 w-24 rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
         </div>
       ) : null}
 
@@ -366,14 +364,14 @@ function MaleHeroPanel({ mode }: { mode: EditorMode }) {
               "rounded-lg border p-3 text-left transition",
               item.id === maleHeroType
                 ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)]"
-                : "border-white/10 bg-[#111217] hover:bg-[#111217]",
+                : "border-white/[0.10] bg-[#111217] hover:bg-[#111217]",
             ].join(" ")}>
               <span className="block text-[14px] font-semibold text-white">{item.label}</span>
               <span className="mt-1 block text-[13px] leading-5 text-white/40">{item.desc}</span>
             </button>
           ))}
         </div>
-        <p className="mt-2 text-[13px] text-white/30">决定对话和行事风格</p>
+        <p className="mt-2 text-[13px] text-white/40">决定对话和行事风格</p>
       </section>
 
       {mode === "pro" ? (
@@ -381,14 +379,14 @@ function MaleHeroPanel({ mode }: { mode: EditorMode }) {
           <TextAreaField label="身份/职业" value={maleHeroIdentity} onChange={(value) => setMaleHeroField("maleHeroIdentity", value)} />
           <TextAreaField label="外貌特征" value={maleHeroAppearance} onChange={(value) => setMaleHeroField("maleHeroAppearance", value)} />
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-white/15 bg-[#111217] text-[13px] text-white/30">上传</div>
-            <p className="text-[13px] leading-5 text-white/35">64×96 角色立绘上传区</p>
+            <div className="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-white/[0.14] bg-[#111217] text-[13px] text-white/40">上传</div>
+            <p className="text-[13px] leading-5 text-white/42">64×96 角色立绘上传区</p>
           </div>
         </>
       ) : null}
 
       <div className="flex justify-center">
-        <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button" onClick={() => goNext("hero")}>
+        <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
           生成立绘
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
         </button>

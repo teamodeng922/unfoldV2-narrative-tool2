@@ -58,7 +58,7 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
 
   return (
     <div className="w-full py-4">
-      <h3 className="mb-4 text-[15px] font-semibold tracking-[0.04em] text-white/60">
+      <h3 className="mb-4 text-[15px] font-semibold tracking-[0.04em] text-white/64">
         角色剧情线
       </h3>
       <div className="grid gap-4">
@@ -68,7 +68,7 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
           const values = seed > 0 ? generateLineValues(line.title, seed - 1) : line.values;
 
           return (
-            <article key={line.id} className="rounded-lg border border-white/10 bg-[#111217]">
+            <article key={line.id} className="rounded-lg border border-white/[0.10] bg-[#111217]">
               <button
                 type="button"
                 onClick={() =>
@@ -87,13 +87,13 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
                 </span>
               </button>
               {opened ? (
-                <div className="grid gap-3 border-t border-white/[0.06] p-4">
+                <div className="grid gap-3 border-t border-white/[0.09] p-4">
                   {plotKeys.map((key) => (
-                    <div key={key} className="rounded-lg border border-white/10 bg-[#0B0D13] p-3">
+                    <div key={key} className="rounded-lg bg-[#0B0D13] p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]">
                       <p className="mb-1 text-[13px] font-semibold text-[#2F8CFF]">
                         {plotLabels[key]}
                       </p>
-                      <p className="text-[13px] leading-6 text-white/60">{values[key]}</p>
+                      <p className="text-[13px] leading-6 text-white/64">{values[key]}</p>
                     </div>
                   ))}
                   <button
@@ -104,7 +104,7 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
                         [line.id]: (current[line.id] ?? 0) + 1,
                       }))
                     }
-                    className="justify-self-start rounded-lg border border-white/10 bg-[#111217] px-3 py-2 text-[13px] text-white/55 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
+                    className="justify-self-start rounded-lg border border-white/[0.10] bg-[#111217] px-3 py-2 text-[13px] text-white/62 transition hover:border-[#2F8CFF]/45 hover:text-[#2F8CFF]"
                   >
                     <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
                     重新生成

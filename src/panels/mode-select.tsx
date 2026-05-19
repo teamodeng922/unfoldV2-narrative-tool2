@@ -39,7 +39,7 @@ export function ModeSelect() {
         <h1 className="mb-2 font-serif text-[22px] font-bold tracking-[0.1em] text-white">
           开卷 Unfold
         </h1>
-        <p className="mb-10 text-[13px] text-white/35">选择适合你的创作模式</p>
+        <p className="mb-10 text-[13px] text-white/42">选择适合你的创作模式</p>
 
         <div className="grid grid-cols-2 gap-4">
           {modes.map((mode) => {
@@ -56,7 +56,7 @@ export function ModeSelect() {
               className={[
                 "h-[186px] rounded-lg border p-6 text-center transition",
                 disabled
-                  ? "cursor-not-allowed border-white/10 bg-white/[0.025] opacity-35 grayscale"
+                  ? "cursor-not-allowed border-white/[0.10] bg-white/[0.025] opacity-35 grayscale"
                   : mode.tone === "gold"
                   ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)]"
                   : "border-[rgba(56,213,255,0.2)] bg-[rgba(56,213,255,0.04)] hover:border-[rgba(56,213,255,0.45)] hover:bg-[rgba(56,213,255,0.08)]",
@@ -66,7 +66,7 @@ export function ModeSelect() {
                 <AppIcon name={mode.icon} size={28} />
               </span>
               <span className="mb-2 block text-[14px] font-bold text-white">{mode.title}</span>
-              <span className="block text-[14px] leading-7 text-white/45">{mode.description}</span>
+              <span className="block text-[14px] leading-7 text-white/52">{mode.description}</span>
             </button>
             );
           })}

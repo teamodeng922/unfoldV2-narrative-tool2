@@ -12,7 +12,7 @@ type CharPreviewProps = {
 
 function Portrait({ hero, index }: { hero: HeroCharacter; index: number }) {
   return (
-    <article className="relative aspect-[2/3] w-full overflow-hidden rounded-lg border border-white/10 bg-[#111217]">
+    <article className="relative aspect-[2/3] w-full overflow-hidden rounded-lg border border-white/[0.10] bg-[#111217]">
       <div
         className="absolute inset-0"
         style={{
@@ -26,7 +26,7 @@ function Portrait({ hero, index }: { hero: HeroCharacter; index: number }) {
         <p className="mt-1 text-[12px] text-[#2F8CFF]">
           {hero.outerTags.join("、")} · {hero.innerTags.join("、")}
         </p>
-        <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-white/55">{hero.identity}</p>
+        <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-white/62">{hero.identity}</p>
       </div>
     </article>
   );
@@ -58,7 +58,7 @@ export function CharPreview({ gender, type }: CharPreviewProps) {
       <div className="flex w-full justify-center py-4">
         <div className="w-[65%] min-w-[260px] max-w-[420px]">
           <Portrait hero={hero} index={1} />
-          <p className="mt-4 text-center text-[14px] leading-6 text-white/45">{selectedType.desc}</p>
+          <p className="mt-4 text-center text-[14px] leading-6 text-white/52">{selectedType.desc}</p>
         </div>
       </div>
     );
@@ -81,7 +81,7 @@ export function CharPreview({ gender, type }: CharPreviewProps) {
       <div className="flex w-full justify-center py-4">
         <div className="w-[65%] min-w-[260px] max-w-[420px]">
           <Portrait hero={heroine} index={2} />
-          <p className="mt-4 text-center text-[14px] leading-6 text-white/45">{selectedType.desc}</p>
+          <p className="mt-4 text-center text-[14px] leading-6 text-white/52">{selectedType.desc}</p>
         </div>
       </div>
     );

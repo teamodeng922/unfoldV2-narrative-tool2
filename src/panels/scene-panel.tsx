@@ -7,7 +7,6 @@ import { AppIcon } from "@/src/components/ui/app-icon";
 
 type ScenePanelProps = {
   mode: EditorMode;
-  onConfirm: () => void;
 };
 
 type TimeSlot = "上午" | "下午" | "晚上";
@@ -55,14 +54,14 @@ const initialActions: ActionItem[] = [
 ];
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
-  return <div className="mb-1.5 text-[14px] font-semibold text-white/58">{children}</div>;
+  return <div className="mb-1.5 text-[14px] font-semibold text-white/55">{children}</div>;
 }
 
 function toggleArrayValue<T>(values: T[], value: T) {
   return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
-export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
+export function ScenePanel({ mode }: ScenePanelProps) {
   const [totalDays, setTotalDays] = useState("30");
   const [stages, setStages] = useState(initialStages);
   const [locations, setLocations] = useState(initialLocations);
@@ -94,7 +93,7 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
   return (
     <div className="py-4">
       <section className="mb-6">
-        <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/60">玩法说明</h3>
+        <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/64">玩法说明</h3>
         <div className="rounded-lg border border-[rgba(47,140,255,0.22)] bg-[rgba(47,140,255,0.06)] p-4">
           <p className="text-[14px] leading-6 text-white/62">
             玩家每天选择地点与行动，在探索、互动和养成中推进角色关系与主线事件。
@@ -104,13 +103,13 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
 
       {mode === "pro" ? (
         <section className="mb-6">
-          <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/60">整体节奏</h3>
+          <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/64">整体节奏</h3>
           <div className="mb-4">
             <FieldLabel>游戏总天数</FieldLabel>
             <input
               value={totalDays}
               onChange={(event) => setTotalDays(event.target.value)}
-              className="h-9 w-28 rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
+              className="h-9 w-28 rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
             />
           </div>
           <RegenField label="引导期 1-3 天" value={stages.guide} onChange={(value) => setStages((current) => ({ ...current, guide: value }))} />
@@ -122,13 +121,13 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
 
       <section className="mb-6">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.04em] text-white/60">地点列表</h3>
+          <h3 className="text-[14px] font-semibold tracking-[0.04em] text-white/64">地点列表</h3>
         </div>
         <div className="grid gap-3">
           {locations.map((location) => {
             const opened = openLocationIds.includes(location.id);
             return (
-              <article key={location.id} className="rounded-lg border border-white/10 bg-[#111217]">
+              <article key={location.id} className="rounded-lg border border-white/[0.10] bg-[#111217]">
                 <button
                   type="button"
                   disabled={mode === "beginner"}
@@ -154,34 +153,34 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
                 </button>
 
                 {mode === "pro" && opened ? (
-                  <div className="border-t border-[rgba(255,255,255,0.06)] p-4">
+                  <div className="border-t border-[rgba(255,255,255,0.08)] p-4">
                     <FieldLabel>地点名称</FieldLabel>
-                    <input value={location.name} onChange={(event) => updateLocation(location.id, { name: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
+                    <input value={location.name} onChange={(event) => updateLocation(location.id, { name: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
                     <FieldLabel>开放时段</FieldLabel>
                     <div className="mb-4 flex flex-wrap gap-2">
                       {timeSlots.map((slot) => (
                         <button key={slot} type="button" onClick={() => updateLocation(location.id, { times: toggleArrayValue(location.times, slot) })} className={[
                           "rounded-full border px-3 py-1.5 text-[14px]",
-                          location.times.includes(slot) ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]" : "border-white/10 bg-[#141720] text-white/55",
+                          location.times.includes(slot) ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]" : "border-white/[0.10] bg-[#141720] text-white/62",
                         ].join(" ")}>
                           {slot}
                         </button>
                       ))}
                     </div>
                     <FieldLabel>开放条件</FieldLabel>
-                    <input value={location.condition} onChange={(event) => updateLocation(location.id, { condition: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
+                    <input value={location.condition} onChange={(event) => updateLocation(location.id, { condition: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
                     <FieldLabel>可出现角色</FieldLabel>
                     <div className="mb-4 flex flex-wrap gap-2">
                       {roleOptions.map((role) => (
                         <button key={role} type="button" onClick={() => updateLocation(location.id, { roles: toggleArrayValue(location.roles, role) })} className={[
                           "rounded-full border px-3 py-1.5 text-[14px]",
-                          location.roles.includes(role) ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]" : "border-white/10 bg-[#141720] text-white/55",
+                          location.roles.includes(role) ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]" : "border-white/[0.10] bg-[#141720] text-white/62",
                         ].join(" ")}>
                           {role}
                         </button>
                       ))}
                     </div>
-                    <div className="mb-4 flex h-24 items-center justify-center rounded-lg border border-dashed border-white/15 bg-[#111217] text-[13px] text-white/30">场景图上传区</div>
+                    <div className="mb-4 flex h-24 items-center justify-center rounded-lg border border-dashed border-white/[0.14] bg-[#111217] text-[13px] text-white/40">场景图上传区</div>
                     <button type="button" onClick={() => setLocations((current) => current.filter((item) => item.id !== location.id))} className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-1.5 text-[12px] text-red-200/70">
                       删除地点
                     </button>
@@ -192,7 +191,7 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
           })}
         </div>
         {mode === "pro" ? (
-          <button type="button" onClick={addLocation} className="mt-3 rounded-lg border border-white/10 bg-[#111217] px-4 py-2 text-[14px] text-white/55 hover:text-[#2F8CFF]">
+          <button type="button" onClick={addLocation} className="mt-3 rounded-lg border border-white/[0.10] bg-[#111217] px-4 py-2 text-[14px] text-white/62 hover:text-[#2F8CFF]">
             <AppIcon className="mr-1.5 inline-block align-[-2px]" name="plus" size={14} />
             添加地点
           </button>
@@ -201,13 +200,13 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
 
       <section className="mb-7">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.04em] text-white/60">行动类型</h3>
+          <h3 className="text-[14px] font-semibold tracking-[0.04em] text-white/64">行动类型</h3>
         </div>
         <div className="grid gap-3">
           {actions.map((action) => {
             const opened = openActionIds.includes(action.id);
             return (
-              <article key={action.id} className="rounded-lg border border-white/10 bg-[#111217]">
+              <article key={action.id} className="rounded-lg border border-white/[0.10] bg-[#111217]">
                 <button
                   type="button"
                   disabled={mode === "beginner"}
@@ -230,11 +229,11 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
                   ) : null}
                 </button>
                 {mode === "pro" && opened ? (
-                  <div className="border-t border-[rgba(255,255,255,0.06)] p-4">
+                  <div className="border-t border-[rgba(255,255,255,0.08)] p-4">
                     <FieldLabel>名称</FieldLabel>
-                    <input value={action.name} onChange={(event) => updateAction(action.id, { name: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
+                    <input value={action.name} onChange={(event) => updateAction(action.id, { name: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
                     <FieldLabel>说明</FieldLabel>
-                    <input value={action.desc} onChange={(event) => updateAction(action.id, { desc: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
+                    <input value={action.desc} onChange={(event) => updateAction(action.id, { desc: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
                     <button type="button" onClick={() => setActions((current) => current.filter((item) => item.id !== action.id))} className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-1.5 text-[12px] text-red-200/70">
                       删除行动
                     </button>
@@ -245,7 +244,7 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
           })}
         </div>
         {mode === "pro" ? (
-          <button type="button" onClick={addAction} className="mt-3 rounded-lg border border-white/10 bg-[#111217] px-4 py-2 text-[14px] text-white/55 hover:text-[#2F8CFF]">
+          <button type="button" onClick={addAction} className="mt-3 rounded-lg border border-white/[0.10] bg-[#111217] px-4 py-2 text-[14px] text-white/62 hover:text-[#2F8CFF]">
             <AppIcon className="mr-1.5 inline-block align-[-2px]" name="plus" size={14} />
             添加行动类型
           </button>
@@ -253,7 +252,7 @@ export function ScenePanel({ mode, onConfirm }: ScenePanelProps) {
       </section>
 
       <div className="flex justify-center">
-        <button type="button" onClick={onConfirm} className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:bg-[#123967]">
+        <button type="button" className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:bg-[#123967]">
           生成场景图
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
         </button>

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ReadOnlyField } from "@/src/components/ui/read-only-field";
 import { RegenField } from "@/src/components/ui/regen-field";
 import type { EditorMode, GenderDirection } from "@/src/types";
-import { useEditorStore } from "@/src/stores/editor-store";
 import { AppIcon } from "@/src/components/ui/app-icon";
 
 type PlotPanelProps = {
@@ -76,12 +75,11 @@ export const maleLines = [
 ];
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/60">{children}</h3>;
+  return <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/64">{children}</h3>;
 }
 
 export function PlotPanel({ mode, gender }: PlotPanelProps) {
   void gender;
-  const goNext = useEditorStore((state) => state.goNext);
   const [mainPlot, setMainPlot] = useState(initialMainPlot);
 
   return (
@@ -101,22 +99,11 @@ export function PlotPanel({ mode, gender }: PlotPanelProps) {
             <ReadOnlyField key={key} label={plotLabels[key]} value={mainPlot[key]} labelClassName={plotLabelClassName} />
           ),
         )}
-        <button type="button" className="rounded-lg border border-white/10 bg-[#111217] px-4 py-2 text-[14px] text-white/55 transition hover:text-[#2F8CFF]">
+        <button type="button" className="rounded-lg border border-white/[0.10] bg-[#111217] px-4 py-2 text-[14px] text-white/62 transition hover:text-[#2F8CFF]">
           <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={14} />
           {mode === "pro" ? "全部重新生成" : "重新生成"}
         </button>
       </section>
-
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={() => goNext("plot")}
-          className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:bg-[#123967]"
-        >
-          确认剧情线
-          <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
-        </button>
-      </div>
     </div>
   );
 }

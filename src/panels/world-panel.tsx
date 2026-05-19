@@ -25,7 +25,7 @@ function Section({
 }>) {
   return (
     <section className="mb-6">
-      <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.02em] text-white/60">
+      <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.02em] text-white/64">
         {title}
       </h3>
       {children}
@@ -57,7 +57,7 @@ export function WorldPanel({ mode }: WorldPanelProps) {
                   "flex h-[48px] items-center justify-center rounded-lg border transition",
                   active
                     ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)]"
-                    : "border-white/10 bg-[#111217] hover:bg-[rgba(255,255,255,0.05)]",
+                    : "border-white/[0.10] bg-[#111217] hover:bg-[rgba(255,255,255,0.05)]",
                 ].join(" ")}
               >
                 <span className="text-[14px] font-semibold text-white">{option.label}</span>
@@ -81,7 +81,7 @@ export function WorldPanel({ mode }: WorldPanelProps) {
                   "inline-flex min-h-8 items-center gap-1 rounded-full border px-3.5 py-1.5 text-[14px] transition",
                   active
                     ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)] text-[#2F8CFF]"
-                    : "border-white/10 bg-[#141720] text-[#E6E1D8] hover:bg-[#191D25]",
+                    : "border-white/[0.10] bg-[#141720] text-[#E6E1D8] hover:bg-[#191D25]",
                 ].join(" ")}
               >
                 {worldType}
@@ -98,17 +98,17 @@ export function WorldPanel({ mode }: WorldPanelProps) {
 
       {mode === "pro" ? (
         <section className="mb-6">
-          <div className="mb-3 flex items-center gap-3 text-[12px] text-white/25">
-            <span className="h-px flex-1 bg-[rgba(255,255,255,0.06)]" />
+          <div className="mb-3 flex items-center gap-3 text-[12px] text-white/42">
+            <span className="h-px flex-1 bg-[rgba(255,255,255,0.08)]" />
             或
-            <span className="h-px flex-1 bg-[rgba(255,255,255,0.06)]" />
+            <span className="h-px flex-1 bg-[rgba(255,255,255,0.08)]" />
           </div>
-          <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.02em] text-white/60">
+          <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.02em] text-white/64">
             自由输入
           </h3>
           <input
             placeholder="自由输入你想要的世界背景描述..."
-            className="h-10 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[13px] text-[#E6E1D8] outline-none transition placeholder:text-white/25 focus:border-[#2F8CFF]/45"
+            className="h-10 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[13px] text-[#E6E1D8] outline-none transition placeholder:text-white/42 focus:border-[#2F8CFF]/45"
           />
         </section>
       ) : null}

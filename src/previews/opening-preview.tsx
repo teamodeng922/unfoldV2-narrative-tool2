@@ -12,7 +12,7 @@ export function OpeningPreview() {
   return (
     <div className="flex h-full min-h-[520px] w-full items-start justify-center py-4">
       <div
-        className="relative aspect-video w-full max-w-[720px] overflow-hidden rounded-lg border border-white/10 shadow-2xl"
+        className="relative aspect-video w-full max-w-[720px] overflow-hidden rounded-lg border border-white/[0.10] shadow-2xl"
         style={{
           background: `linear-gradient(135deg, hsl(${hue}, 46%, 18%), hsl(${(hue + 34) % 360}, 54%, 8%) 62%, hsl(${(hue + 78) % 360}, 40%, 13%))`,
         }}
@@ -33,7 +33,7 @@ export function OpeningPreview() {
           >
             {gameName}
           </h3>
-          <p className="mt-5 text-[12px] tracking-[0.08em] text-white/58">— 点击开始 —</p>
+          <p className="mt-5 text-[12px] tracking-[0.08em] text-white/55">— 点击开始 —</p>
         </div>
       </div>
     </div>

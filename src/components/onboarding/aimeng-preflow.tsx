@@ -92,7 +92,6 @@ export function AimengPreflow({
   const [collapsing, setCollapsing] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [selectedMode, setSelectedMode] = useState<EditorMode>("beginner");
-  const canReturnToWelcome = initialStep === 0;
 
   const collapseBubbles = useMemo(
     () =>
@@ -189,7 +188,6 @@ export function AimengPreflow({
         <p className="mt-1 text-center text-[14px] italic text-[#2F8CFF]/78">
           现在我们先开放最低门槛的那条：交互叙事。其余正在路上。
         </p>
-        {canReturnToWelcome ? <BackButton onClick={() => goToStep(0)} /> : null}
       </Screen>
 
       <Screen active={step === 2}>
@@ -208,7 +206,6 @@ export function AimengPreflow({
         <p className="mt-1 text-center text-[14px] italic text-[#2F8CFF]/78">
           这次我们先只开放女性视角 —— Lady first :)
         </p>
-        <BackButton onClick={() => goToStep(1)} />
       </Screen>
 
       <Screen active={step === 3}>
@@ -259,7 +256,6 @@ export function AimengPreflow({
             未来开放
           </p>
         </div>
-        {canReturnToWelcome ? <BackButton onClick={() => goToStep(2)} /> : null}
       </Screen>
 
       <Screen active={step === 4}>
@@ -432,18 +428,5 @@ function BubbleField({
         </button>
       ))}
     </div>
-  );
-}
-
-function BackButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="mt-7 border-0 bg-transparent font-sans text-[14px] text-white/55 transition hover:text-white"
-    >
-      <AppIcon className="mr-1.5 inline-block align-[-2px]" name="chevron-left" size={14} />
-      返回
-    </button>
   );
 }

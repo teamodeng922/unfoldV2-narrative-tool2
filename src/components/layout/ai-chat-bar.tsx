@@ -94,7 +94,7 @@ export function AiChatBar() {
   };
 
   return (
-    <footer className="h-[220px] shrink-0 border-t border-[#2F8CFF]/20 bg-[#050509] px-5 py-4">
+    <section className="h-[220px] shrink-0 border-b border-[#2F8CFF]/20 bg-[#050509] px-5 py-3">
       <div className="mx-auto flex h-full max-w-[1540px] flex-col gap-3 rounded-xl border border-[#2F8CFF]/45 bg-[linear-gradient(180deg,rgba(47,140,255,0.12),rgba(11,13,19,0.96)_34%,rgba(7,9,14,0.98))] p-4 shadow-[0_0_0_1px_rgba(56,213,255,0.08),0_0_34px_rgba(47,140,255,0.22),0_22px_64px_rgba(0,0,0,0.38)]">
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           <div className="flex flex-col gap-2">
@@ -108,15 +108,15 @@ export function AiChatBar() {
                     : "mr-auto border border-[#2F8CFF]/18 bg-[#111827] text-white/70",
                 ].join(" ")}
               >
-                <span className="mb-1 block text-[11px] font-semibold text-[#2F8CFF]">
+                <span className="mr-2 inline text-[12px] font-semibold text-[#2F8CFF]">
                   {item.role === "user" ? "你" : "AI"}
                 </span>
-                {item.text}
+                <span>{item.text}</span>
               </div>
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/20 p-2">
+        <div className="flex items-center gap-3 rounded-lg border border-white/[0.10] bg-black/20 p-2">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[#2F8CFF]/55 bg-[#2F8CFF]/18 text-[13px] font-bold text-[#38D5FF] shadow-[0_0_18px_rgba(47,140,255,0.22)]">
           AI
         </div>
@@ -130,8 +130,8 @@ export function AiChatBar() {
                 sendMessage();
               }
             }}
-            placeholder={prompt.placeholder}
-            className="h-11 w-full rounded-md border border-[#2F8CFF]/24 bg-[#0D111A] px-4 text-[13px] text-[#E6E1D8] outline-none transition placeholder:text-white/35 focus:border-[#2F8CFF]/65 focus:bg-[#111827] focus:shadow-[0_0_0_3px_rgba(47,140,255,0.12)]"
+            placeholder=""
+            className="h-11 w-full rounded-md border border-[#2F8CFF]/24 bg-[#0D111A] px-4 text-[13px] text-[#E6E1D8] outline-none transition placeholder:text-white/42 focus:border-[#2F8CFF]/65 focus:bg-[#111827] focus:shadow-[0_0_0_3px_rgba(47,140,255,0.12)]"
           />
         </div>
         <button
@@ -141,13 +141,13 @@ export function AiChatBar() {
             "h-11 w-[112px] shrink-0 rounded-md border px-4 text-[13px] font-semibold transition",
             message.trim()
               ? "border-[#2F8CFF]/65 bg-[#0D2B52] text-white shadow-[0_0_18px_rgba(47,140,255,0.28)] hover:bg-[#123967]"
-              : "border-[#2F8CFF]/18 bg-[#111827] text-white/32",
+              : "border-[#2F8CFF]/18 bg-[#111827] text-white/42",
           ].join(" ")}
         >
           发送
         </button>
         </div>
       </div>
-    </footer>
+    </section>
   );
 }

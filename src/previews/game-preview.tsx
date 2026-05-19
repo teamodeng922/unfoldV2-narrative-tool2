@@ -48,7 +48,7 @@ export function GamePreview() {
         <button
           type="button"
           onClick={next}
-          className="relative aspect-video w-full overflow-hidden rounded-lg border border-white/10 bg-[linear-gradient(135deg,#141019,#050509_55%,#161a24)] text-left shadow-2xl"
+          className="relative aspect-video w-full overflow-hidden rounded-lg border border-white/[0.10] bg-[linear-gradient(135deg,#141019,#050509_55%,#161a24)] text-left shadow-2xl"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(47,140,255,0.18),transparent_28%),radial-gradient(circle_at_74%_74%,rgba(56,213,255,0.14),transparent_30%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_45%,rgba(0,0,0,0.72)_100%)]" />
@@ -60,7 +60,7 @@ export function GamePreview() {
           ) : null}
 
           {scene.type === "dialog" ? (
-            <div className="absolute inset-x-8 bottom-8 rounded-lg border border-white/10 bg-black/45 p-4 backdrop-blur">
+            <div className="absolute inset-x-8 bottom-8 rounded-lg border border-white/[0.10] bg-black/45 p-4 backdrop-blur">
               <p className="mb-2 font-serif text-[14px] font-bold text-[#2F8CFF]">{scene.speaker}</p>
               <p className="text-[14px] leading-7 text-white/78">{scene.text}</p>
             </div>
@@ -71,7 +71,7 @@ export function GamePreview() {
               {scene.options.map((option, optionIndex) => (
                 <div
                   key={option.label}
-                  className="rounded-lg border border-white/10 bg-[#191D25] p-3 transition hover:border-[rgba(47,140,255,0.35)]"
+                  className="rounded-lg border border-white/[0.10] bg-[#191D25] p-3 transition hover:border-[rgba(47,140,255,0.35)]"
                 >
                   <p className="mb-1 text-[14px] font-semibold text-white">
                     {optionIndex + 1}. {option.label}
@@ -98,7 +98,7 @@ export function GamePreview() {
           <button
             type="button"
             onClick={() => setIndex(0)}
-            className="rounded-lg border border-white/10 bg-[#111217] px-3 py-1.5 text-[14px] text-white/55 transition hover:text-[#2F8CFF]"
+            className="rounded-lg border border-white/[0.10] bg-[#111217] px-3 py-1.5 text-[14px] text-white/62 transition hover:text-[#2F8CFF]"
           >
             <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={14} />
             从头播放

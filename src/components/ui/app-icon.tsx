@@ -36,6 +36,7 @@ export type AppIconName =
   | "star"
   | "wand"
   | "plus"
+  | "check"
   | "chevron-up"
   | "chevron-down"
   | "chevron-left"
@@ -142,6 +143,7 @@ const paths: Record<AppIconName, string[]> = {
   star: ["M12 3l2.2 6.4H21l-5.4 4 2 6.6-5.6-4-5.6 4 2-6.6L3 9.4h6.8Z"],
   wand: ["M15 4l5 5", "M14 5l5 5", "M3 21l11-11", "M6 4v3", "M4.5 5.5h3", "M19 16v3", "M17.5 17.5h3"],
   plus: ["M12 5v14", "M5 12h14"],
+  check: ["M20 6 9 17l-5-5"],
   "chevron-up": ["m18 15-6-6-6 6"],
   "chevron-down": ["m6 9 6 6 6-6"],
   "chevron-left": ["m15 18-6-6 6-6"],

@@ -33,24 +33,24 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
     <div className="w-full py-4">
       <section className="mb-6">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.02em] text-white/50">游戏名称</h3>
+          <h3 className="text-[14px] font-semibold tracking-[0.02em] text-white/55">游戏名称</h3>
         </div>
 
         {mode === "pro" ? (
           <input
             value={gameName}
             onChange={(event) => setGameName(event.target.value)}
-            className="h-10 w-[240px] rounded-lg border border-white/10 bg-[#111217] px-3 font-serif text-[14px] font-bold text-white outline-none transition focus:border-[#2F8CFF]/45"
+            className="h-10 w-[240px] rounded-lg border border-white/[0.10] bg-[#111217] px-3 font-serif text-[14px] font-bold text-white outline-none transition focus:border-[#2F8CFF]/45"
           />
         ) : (
-          <div className="w-[240px] rounded-lg border border-white/10 bg-[#111217] px-3 py-2.5 font-serif text-[14px] font-bold text-white">
+          <div className="w-[240px] rounded-lg border border-white/[0.10] bg-[#111217] px-3 py-2.5 font-serif text-[14px] font-bold text-white">
             {gameName}
           </div>
         )}
       </section>
 
       <section className="mb-6">
-        <h3 className="mb-3 text-[14px] font-semibold tracking-[0.02em] text-white/50">世界大纲</h3>
+        <h3 className="mb-3 text-[14px] font-semibold tracking-[0.02em] text-white/55">世界大纲</h3>
         <div className="grid grid-cols-3 gap-3">
           {outlines.map((outline) => {
             const active = outline.id === selectedOutline.id;
@@ -66,7 +66,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
                   "min-h-[96px] rounded-lg border p-3 text-left transition",
                   active
                     ? "border-[#2F8CFF]/65 bg-[linear-gradient(180deg,rgba(47,140,255,0.18),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)]"
-                    : "border-white/10 bg-[#111217] hover:bg-[rgba(255,255,255,0.05)]",
+                    : "border-white/[0.10] bg-[#111217] hover:bg-[rgba(255,255,255,0.05)]",
                 ].join(" ")}
               >
                 <span className="mb-2 block text-[11px] font-semibold text-[#2F8CFF]">
@@ -84,7 +84,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
 
       <section className="mb-6">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.02em] text-white/50">大纲详情</h3>
+          <h3 className="text-[14px] font-semibold tracking-[0.02em] text-white/55">大纲详情</h3>
           {mode === "pro" ? (
             <button
               type="button"
@@ -111,10 +111,10 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
                 },
               }))
             }
-            className="h-10 w-full rounded-lg border border-white/10 bg-[#111217] px-3 text-[13px] text-[#E6E1D8] outline-none transition focus:border-[#2F8CFF]/45"
+            className="h-10 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[13px] text-[#E6E1D8] outline-none transition focus:border-[#2F8CFF]/45"
           />
         ) : (
-          <div className="rounded-lg border border-white/10 bg-[#111217] p-3 text-[13px] leading-6 text-white/65">
+          <div className="rounded-lg bg-[#111217] p-3 text-[13px] leading-6 text-white/70 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]">
             {draftDesc}
           </div>
         )}
@@ -128,13 +128,13 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="rounded-lg border border-white/10 bg-[#111217] p-3"
+                className="rounded-lg bg-[#111217] p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]"
               >
                 <div className="mb-1.5 flex items-center justify-between">
-                  <span className="text-[13px] text-white/35">{label}</span>
-                  <AppIcon className="text-white/25" name="pencil-line" size={12} />
+                  <span className="text-[13px] text-white/42">{label}</span>
+                  <AppIcon className="text-white/42" name="pencil-line" size={12} />
                 </div>
-                <p className="text-[14px] leading-6 text-white/60">{value}</p>
+                <p className="text-[14px] leading-6 text-white/64">{value}</p>
               </div>
             ))}
           </div>
@@ -144,7 +144,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
       <div className="flex justify-center">
         <button
           type="button"
-          className="rounded-md border border-white/10 bg-[#111217] px-4 py-2 text-[13px] text-white/55 transition hover:bg-[#191D25] hover:text-[#2F8CFF]"
+          className="rounded-md border border-white/[0.10] bg-[#111217] px-4 py-2 text-[13px] text-white/62 transition hover:bg-[#191D25] hover:text-[#2F8CFF]"
         >
           <AppIcon className="mr-1.5 inline-block align-[-2px]" name="refresh-cw" size={13} />
           重新生成

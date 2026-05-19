@@ -28,10 +28,10 @@ export function MechanicPanel(_props: MechanicPanelProps) {
   return (
     <div className="py-4">
       <div className="mb-5">
-        <h3 className="mb-1 text-[14px] font-semibold tracking-[0.04em] text-white/60">
+        <h3 className="mb-1 text-[14px] font-semibold tracking-[0.04em] text-white/64">
           推荐玩法
         </h3>
-        <p className="text-[13px] text-white/30">{worldType} 默认适配的玩法组合</p>
+        <p className="text-[13px] text-white/40">{worldType} 默认适配的玩法组合</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -46,8 +46,8 @@ export function MechanicPanel(_props: MechanicPanelProps) {
               className={[
                 "min-h-[142px] rounded-lg border p-5 text-left transition",
                 selected
-                  ? "border-[#2F8CFF]/70 bg-[linear-gradient(180deg,rgba(47,140,255,0.15),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_0_1px_rgba(47,140,255,0.16)]"
-                  : "cursor-not-allowed border-white/10 bg-[#111217] opacity-38 grayscale",
+                  ? "border-[#2F8CFF]/70 bg-[linear-gradient(180deg,rgba(47,140,255,0.15),rgba(47,140,255,0.045))] shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_0_0_1px_rgba(47,140,255,0.16)]"
+                  : "cursor-not-allowed border-white/[0.10] bg-[#111217] opacity-38 grayscale",
               ].join(" ")}
             >
               <button
@@ -58,7 +58,7 @@ export function MechanicPanel(_props: MechanicPanelProps) {
               >
                 <div className="grid grid-cols-[34px_1fr_auto] gap-3">
                 <AppIcon
-                  className={open ? "mt-1 text-[#2F8CFF]" : "mt-1 text-white/35"}
+                  className={open ? "mt-1 text-[#2F8CFF]" : "mt-1 text-white/42"}
                   name={gameType.icon as AppIconName}
                   size={22}
                 />
@@ -103,8 +103,8 @@ export function MechanicPanel(_props: MechanicPanelProps) {
                   </button>
 
                   {expandedIds.includes(gameType.id) ? (
-                    <div className="mt-5 border-t border-white/10 pt-5">
-                      <p className="text-[14px] leading-7 text-white/55">{gameType.detail}</p>
+                    <div className="mt-5 border-t border-white/[0.10] pt-5">
+                      <p className="text-[14px] leading-7 text-white/62">{gameType.detail}</p>
                       <div className="mt-5 flex flex-wrap gap-2">
                         {gameType.mechanics.map((mechanic) => (
                           <span
@@ -124,7 +124,7 @@ export function MechanicPanel(_props: MechanicPanelProps) {
         })}
       </div>
 
-      <p className="mt-5 text-center text-[13px] tracking-[0.08em] text-white/35">
+      <p className="mt-5 text-center text-[13px] tracking-[0.08em] text-white/42">
         更多玩法敬请期待
       </p>
     </div>
