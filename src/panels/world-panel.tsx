@@ -5,6 +5,7 @@ import { useEditorStore } from "@/src/stores/editor-store";
 import type { ReactNode } from "react";
 import type { EditorMode, Era } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 
 type WorldPanelProps = {
   mode: EditorMode;
@@ -17,17 +18,17 @@ const eraOptions: Array<{ id: Era; label: string }> = [
 ];
 
 function Section({
+  num,
   title,
   children,
 }: Readonly<{
+  num: string;
   title: string;
   children: ReactNode;
 }>) {
   return (
     <section className="mb-6">
-      <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.02em] text-white/64">
-        {title}
-      </h3>
+      <NumberedTitle className="mb-2.5" num={num}>{title}</NumberedTitle>
       {children}
     </section>
   );
@@ -43,7 +44,7 @@ export function WorldPanel({ mode }: WorldPanelProps) {
 
   return (
     <div className="py-4">
-      <Section title="时代">
+      <Section num="01" title="时代">
         <div className="grid grid-cols-3 gap-3">
           {eraOptions.map((option) => {
             const active = worldSettings.era === option.id;
@@ -67,7 +68,7 @@ export function WorldPanel({ mode }: WorldPanelProps) {
         </div>
       </Section>
 
-      <Section title="世界类型">
+      <Section num="02" title="世界类型">
         <div className="flex flex-wrap gap-2">
           {availableWorlds.map((worldType, index) => {
             const active = worldSettings.worldType === worldType;
@@ -103,9 +104,7 @@ export function WorldPanel({ mode }: WorldPanelProps) {
             或
             <span className="h-px flex-1 bg-[rgba(255,255,255,0.08)]" />
           </div>
-          <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.02em] text-white/64">
-            自由输入
-          </h3>
+          <NumberedTitle className="mb-2.5" num="03">自由输入</NumberedTitle>
           <input
             placeholder="自由输入你想要的世界背景描述..."
             className="h-10 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[13px] text-[#E6E1D8] outline-none transition placeholder:text-white/42 focus:border-[#2F8CFF]/45"
