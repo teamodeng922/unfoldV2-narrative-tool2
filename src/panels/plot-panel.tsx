@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ReadOnlyField } from "@/src/components/ui/read-only-field";
 import { RegenButton } from "@/src/components/ui/regen-button";
 import { RegenField } from "@/src/components/ui/regen-field";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 import type { EditorMode, GenderDirection } from "@/src/types";
 
 type PlotPanelProps = {
@@ -74,10 +75,6 @@ export const maleLines = [
   },
 ];
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/64">{children}</h3>;
-}
-
 export function PlotPanel({ mode, gender }: PlotPanelProps) {
   void gender;
   const [mainPlot, setMainPlot] = useState(initialMainPlot);
@@ -85,7 +82,7 @@ export function PlotPanel({ mode, gender }: PlotPanelProps) {
   return (
     <div className="py-4">
       <section className="mb-7">
-        <SectionTitle>世界主线大纲</SectionTitle>
+        <NumberedTitle num="01">世界主线大纲</NumberedTitle>
         {plotKeys.map((key) =>
           mode === "pro" ? (
             <RegenField

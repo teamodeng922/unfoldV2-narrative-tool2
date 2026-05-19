@@ -14,7 +14,7 @@ export function MechanicPreview(_props: MechanicPreviewProps) {
   return (
     <div className="w-full py-4">
       <section className="mb-6 rounded-lg border border-white/[0.10] bg-[#111217] px-5 pb-12 pt-5">
-        <NumberedTitle className="mb-6 text-white/52" num="01">玩家体验流程</NumberedTitle>
+        <NumberedTitle className="mb-6 text-white/52" num="02">玩家体验流程</NumberedTitle>
         <div className="mx-auto flex w-full max-w-[880px] items-start">
           {flow.map((item, index) => (
             <div
@@ -41,7 +41,7 @@ export function MechanicPreview(_props: MechanicPreviewProps) {
       </section>
 
       <section className="rounded-lg border border-[rgba(56,213,255,0.22)] bg-[rgba(56,213,255,0.05)] p-5">
-        <NumberedTitle className="mb-4 text-[#38D5FF]" num="02">多玩法组合</NumberedTitle>
+        <NumberedTitle className="mb-4 text-[#38D5FF]" num="03">多玩法组合</NumberedTitle>
         <p className="text-[15px] leading-7 text-white/62">
           以恋爱攻略作为主驱动力，叠加养成模拟作为节奏变化与分支压力。
         </p>

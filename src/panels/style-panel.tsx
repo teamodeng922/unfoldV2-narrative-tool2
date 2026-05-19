@@ -4,6 +4,7 @@ import { ART_STYLES } from "@/src/data/art-styles";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { ArtStyle, ProportionId } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 
 const PROPORTIONS: Array<{ id: ProportionId; label: string; desc: string }> = [
   { id: "real", label: "写实比例", desc: "7-8头身" },
@@ -16,17 +17,17 @@ function isStyleFit(style: ArtStyle, era: string) {
 }
 
 function Section({
+  num,
   title,
   children,
 }: Readonly<{
+  num: string;
   title: string;
   children: React.ReactNode;
 }>) {
   return (
     <section className="mb-6">
-      <h3 className="mb-2.5 text-[14px] font-semibold tracking-[0.04em] text-white/64">
-        {title}
-      </h3>
+      <NumberedTitle className="mb-2.5" num={num}>{title}</NumberedTitle>
       {children}
     </section>
   );
@@ -41,7 +42,7 @@ export function StylePanel() {
 
   return (
     <div className="py-4">
-      <Section title="画面风格">
+      <Section num="01" title="画面风格">
         <div className="grid grid-cols-2 gap-3">
           {ART_STYLES.map((style) => {
             const fit = isStyleFit(style, era);
@@ -89,7 +90,7 @@ export function StylePanel() {
         </div>
       </Section>
 
-      <Section title="人物比例">
+      <Section num="02" title="人物比例">
         <div className="grid grid-cols-3 gap-3">
           {PROPORTIONS.map((item) => {
             const active = proportion === item.id;

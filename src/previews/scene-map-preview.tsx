@@ -1,3 +1,5 @@
+import { RegenButton } from "@/src/components/ui/regen-button";
+
 const locations = [
   { name: "御花园", x: "48%", y: "31%" },
   { name: "练武场", x: "74%", y: "56%" },
@@ -38,6 +40,9 @@ export function SceneMapPreview() {
             </div>
           </article>
         ))}
+      </div>
+      <div className="mt-4 flex justify-center">
+        <RegenButton>重新生成</RegenButton>
       </div>
     </div>
   );

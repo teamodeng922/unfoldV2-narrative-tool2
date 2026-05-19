@@ -2,6 +2,7 @@
 
 import { MALE_HERO_TYPES } from "@/src/data/hero-types";
 import { FEMALE_HEROINE_TYPES } from "@/src/data/heroine-types";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { GenderDirection, HeroCharacter } from "@/src/types";
 
@@ -59,6 +60,9 @@ export function CharPreview({ gender, type }: CharPreviewProps) {
         <div className="w-[65%] min-w-[260px] max-w-[420px]">
           <Portrait hero={hero} index={1} />
           <p className="mt-4 text-center text-[14px] leading-6 text-white/52">{selectedType.desc}</p>
+          <div className="mt-4 flex justify-center">
+            <RegenButton>重新生成</RegenButton>
+          </div>
         </div>
       </div>
     );
@@ -82,6 +86,9 @@ export function CharPreview({ gender, type }: CharPreviewProps) {
         <div className="w-[65%] min-w-[260px] max-w-[420px]">
           <Portrait hero={heroine} index={2} />
           <p className="mt-4 text-center text-[14px] leading-6 text-white/52">{selectedType.desc}</p>
+          <div className="mt-4 flex justify-center">
+            <RegenButton>重新生成</RegenButton>
+          </div>
         </div>
       </div>
     );
@@ -94,6 +101,9 @@ export function CharPreview({ gender, type }: CharPreviewProps) {
       {characters.map((character, index) => (
         <Portrait key={character.id} hero={character} index={index} />
       ))}
+      <div className="col-span-2 flex justify-center">
+        <RegenButton>重新生成</RegenButton>
+      </div>
     </div>
   );
 }

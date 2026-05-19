@@ -25,6 +25,10 @@ export function MechanicPanel(_props: MechanicPanelProps) {
   const worldType = useEditorStore((state) => state.worldSettings.worldType);
   const setMechTypes = useEditorStore((state) => state.setMechTypes);
   const [expandedIds, setExpandedIds] = useState<GameTypeId[]>([]);
+  const sortedGameTypes = [
+    ...GAME_TYPES.filter((gameType) => openMechanics.includes(gameType.id)),
+    ...GAME_TYPES.filter((gameType) => !openMechanics.includes(gameType.id)),
+  ];
 
   return (
     <div className="py-4">
@@ -34,7 +38,7 @@ export function MechanicPanel(_props: MechanicPanelProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {GAME_TYPES.map((gameType) => {
+        {sortedGameTypes.map((gameType) => {
           const open = openMechanics.includes(gameType.id);
           const selected = open;
           const badge = roleLabel(gameType.id);

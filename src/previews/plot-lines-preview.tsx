@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RegenButton } from "@/src/components/ui/regen-button";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 import { femaleLines, maleLines } from "@/src/panels/plot-panel";
 import type { GenderDirection } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
@@ -59,9 +60,7 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
 
   return (
     <div className="w-full py-4">
-      <h3 className="mb-4 text-[15px] font-semibold tracking-[0.04em] text-white/64">
-        角色剧情线
-      </h3>
+      <NumberedTitle className="mb-4" num="02">角色剧情线</NumberedTitle>
       <div className="grid gap-4">
         {lines.map((line) => {
           const opened = !collapsedLineIds.includes(line.id);
@@ -98,6 +97,7 @@ export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
                     </div>
                   ))}
                   <RegenButton
+                    className="justify-self-start"
                     type="button"
                     onClick={() =>
                       setLineSeeds((current) => ({

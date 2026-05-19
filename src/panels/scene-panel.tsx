@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RegenField } from "@/src/components/ui/regen-field";
 import type { EditorMode } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
+import { NumberedTitle } from "@/src/components/ui/numbered-title";
 
 type ScenePanelProps = {
   mode: EditorMode;
@@ -93,7 +94,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
   return (
     <div className="py-4">
       <section className="mb-6">
-        <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/64">玩法说明</h3>
+        <NumberedTitle num="01">玩法说明</NumberedTitle>
         <div className="rounded-lg border border-[rgba(47,140,255,0.22)] bg-[rgba(47,140,255,0.06)] p-4">
           <p className="text-[14px] leading-6 text-white/62">
             玩家每天选择地点与行动，在探索、互动和养成中推进角色关系与主线事件。
@@ -103,7 +104,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
 
       {mode === "pro" ? (
         <section className="mb-6">
-          <h3 className="mb-3 text-[14px] font-semibold tracking-[0.04em] text-white/64">整体节奏</h3>
+          <NumberedTitle num="02">整体节奏</NumberedTitle>
           <div className="mb-4">
             <FieldLabel>游戏总天数</FieldLabel>
             <input
@@ -121,7 +122,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
 
       <section className="mb-6">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.04em] text-white/64">地点列表</h3>
+          <NumberedTitle className="mb-0" num={mode === "pro" ? "03" : "02"}>地点列表</NumberedTitle>
         </div>
         <div className="grid gap-3">
           {locations.map((location) => {
@@ -200,7 +201,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
 
       <section className="mb-7">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-[14px] font-semibold tracking-[0.04em] text-white/64">行动类型</h3>
+          <NumberedTitle className="mb-0" num={mode === "pro" ? "04" : "03"}>行动类型</NumberedTitle>
         </div>
         <div className="grid gap-3">
           {actions.map((action) => {
