@@ -27,6 +27,8 @@ const initialMainPlot: Record<(typeof plotKeys)[number], string> = {
   ending: "世界危机迎来结算，角色关系落定，主角走向由选择共同塑造的最终结局。",
 };
 
+const plotLabelClassName = "mb-1.5 text-[14px] font-semibold text-[#2F8CFF]";
+
 export const femaleLines = [
   {
     id: "xiao",
@@ -92,10 +94,11 @@ export function PlotPanel({ mode, gender }: PlotPanelProps) {
               key={key}
               label={plotLabels[key]}
               value={mainPlot[key]}
+              labelClassName={plotLabelClassName}
               onChange={(value) => setMainPlot((current) => ({ ...current, [key]: value }))}
             />
           ) : (
-            <ReadOnlyField key={key} label={plotLabels[key]} value={mainPlot[key]} />
+            <ReadOnlyField key={key} label={plotLabels[key]} value={mainPlot[key]} labelClassName={plotLabelClassName} />
           ),
         )}
         <button type="button" className="rounded-lg border border-white/10 bg-[#111217] px-4 py-2 text-[14px] text-white/55 transition hover:text-[#2F8CFF]">

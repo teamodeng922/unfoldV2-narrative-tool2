@@ -6,13 +6,14 @@ type RegenFieldProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  labelClassName?: string;
 };
 
-export function RegenField({ label, value, onChange }: RegenFieldProps) {
+export function RegenField({ label, value, onChange, labelClassName }: RegenFieldProps) {
   return (
     <div className="mb-4">
       <div className="mb-1.5 flex items-center justify-between">
-        <label className="text-[14px] font-semibold text-white/58">{label}</label>
+        <label className={labelClassName ?? "text-[14px] font-semibold text-white/58"}>{label}</label>
         <button type="button" className="text-[13px] text-white/35 transition hover:text-[#2F8CFF]">
           <AppIcon name="refresh-cw" size={13} />
         </button>

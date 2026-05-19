@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { femaleLines, maleLines } from "@/src/panels/plot-panel";
 import type { GenderDirection } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
@@ -20,7 +20,11 @@ const plotKeys = ["opening", "develop", "climax", "ending"] as const;
 
 export function PlotLinesPreview({ gender }: PlotLinesPreviewProps) {
   const lines = gender === "female" ? femaleLines : maleLines;
-  const [openLineIds, setOpenLineIds] = useState<string[]>([lines[0].id]);
+  const [openLineIds, setOpenLineIds] = useState<string[]>(() => lines.map((line) => line.id));
+
+  useEffect(() => {
+    setOpenLineIds(lines.map((line) => line.id));
+  }, [lines]);
 
   return (
     <div className="w-full py-4">
