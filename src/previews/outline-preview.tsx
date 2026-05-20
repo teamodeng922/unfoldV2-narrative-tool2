@@ -17,6 +17,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
   const gameName = useEditorStore((state) => state.gameName);
   const worldOutlineSeed = useEditorStore((state) => state.worldOutlineSeed);
   const setGameName = useEditorStore((state) => state.setGameName);
+  const generateWorldOutline = useEditorStore((state) => state.generateWorldOutline);
   const [selectedIdByWorld, setSelectedIdByWorld] = useState<Record<string, number>>({});
   const [expandedByWorld, setExpandedByWorld] = useState<Record<string, boolean>>({});
   const [draftDescByWorld, setDraftDescByWorld] = useState<Record<string, Record<number, string>>>(
@@ -144,7 +145,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
       </section>
 
       <div className="flex justify-center">
-        <RegenButton>重新生成</RegenButton>
+        <RegenButton onClick={generateWorldOutline}>重新生成</RegenButton>
       </div>
     </div>
   );

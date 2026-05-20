@@ -129,6 +129,7 @@ function FemaleDirectionHeroinePanel({ mode }: { mode: EditorMode }) {
   const femaleHeroineAppearance = useEditorStore((state) => state.femaleHeroineAppearance);
   const setFemaleHeroineType = useEditorStore((state) => state.setFemaleHeroineType);
   const setFemaleHeroineField = useEditorStore((state) => state.setFemaleHeroineField);
+  const generateFemaleHeroineSetting = useEditorStore((state) => state.generateFemaleHeroineSetting);
   const selectedType = useMemo(
     () => FEMALE_HEROINE_TYPES.find((item) => item.id === femaleHeroineType) ?? FEMALE_HEROINE_TYPES[0],
     [femaleHeroineType],
@@ -183,6 +184,7 @@ function FemaleDirectionHeroinePanel({ mode }: { mode: EditorMode }) {
         </>
       ) : null}
       <div className="flex justify-center">
+        <RegenButton className="mr-3" onClick={generateFemaleHeroineSetting}>重新生成</RegenButton>
         <button
           className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]"
           type="button"
@@ -201,6 +203,7 @@ function MaleDirectionHeroinePanel({ mode }: { mode: EditorMode }) {
   const setActiveHeroineId = useEditorStore((state) => state.setActiveHeroineId);
   const updateHeroine = useEditorStore((state) => state.updateHeroine);
   const addHeroine = useEditorStore((state) => state.addHeroine);
+  const generateActiveHeroine = useEditorStore((state) => state.generateActiveHeroine);
   const [batchIndex, setBatchIndex] = useState(0);
   const activeHeroine = heroines.find((heroine) => heroine.id === activeHeroineId) ?? heroines[0];
   const names = nameBatches[batchIndex % nameBatches.length];
@@ -244,6 +247,9 @@ function MaleDirectionHeroinePanel({ mode }: { mode: EditorMode }) {
             </div>
           ))}
         </article>
+        <div className="mt-4 flex justify-center">
+          <RegenButton onClick={generateActiveHeroine}>重新生成</RegenButton>
+        </div>
         <div className="mt-6 flex justify-center">
           <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
             生成立绘
@@ -336,6 +342,7 @@ function MaleDirectionHeroinePanel({ mode }: { mode: EditorMode }) {
         <p className="text-[13px] leading-5 text-white/42">64×96 角色立绘上传区</p>
       </div>
       <div className="flex justify-center">
+        <RegenButton className="mr-3" onClick={generateActiveHeroine}>重新生成</RegenButton>
         <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
           生成立绘
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />

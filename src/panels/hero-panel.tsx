@@ -18,49 +18,6 @@ const nameBatches = [
   ["容珩", "周砚", "裴照"],
 ];
 
-const heroRegenPool: Array<Omit<HeroCharacter, "id">> = [
-  {
-    name: "萧夜寒",
-    age: "24",
-    outerTags: ["高冷"],
-    innerTags: ["深情"],
-    identity: "冷宫废皇子，表面失势，暗中仍有人替他传递消息。",
-    appearance: "墨发如瀑，肤若冷玉，常着玄色旧袍，眼神锋利而克制。",
-  },
-  {
-    name: "沈墨尘",
-    age: "26",
-    outerTags: ["痞气"],
-    innerTags: ["腹黑"],
-    identity: "镇北将军之子，玩世不恭只是保护色。",
-    appearance: "剑眉英挺，肤色微铜，笑起来漫不经心，手背有旧伤。",
-  },
-  {
-    name: "顾渊",
-    age: "25",
-    outerTags: ["温润"],
-    innerTags: ["孤独"],
-    identity: "太医院少院判，温和守礼，掌握宫中许多不能说的病案。",
-    appearance: "眉眼清雅，常带药香，袖口总压着一枚旧银针。",
-  },
-  {
-    name: "裴行舟",
-    age: "27",
-    outerTags: ["张扬"],
-    innerTags: ["野心"],
-    identity: "新贵权臣，锋芒太露，却愿意为你留一条退路。",
-    appearance: "红衣金扣，眉峰凌厉，笑意明亮却带审视。",
-  },
-  {
-    name: "谢临渊",
-    age: "23",
-    outerTags: ["清冷"],
-    innerTags: ["偏执"],
-    identity: "前朝遗孤，隐身禁军，所有忠诚都藏着代价。",
-    appearance: "眼尾微冷，常佩无纹短刀，站在人群里像一段雪光。",
-  },
-];
-
 const lineMap: Record<string, string> = {
   "高冷+深情": "他对全世界都冷若冰霜，却在无人时默默为你挡下所有风雨",
   "高冷+腹黑": "表面清冷自持的他，每一步棋都在将你推向他的棋盘中央",
@@ -177,14 +134,10 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
   const setActiveHeroId = useEditorStore((state) => state.setActiveHeroId);
   const updateHero = useEditorStore((state) => state.updateHero);
   const addHero = useEditorStore((state) => state.addHero);
+  const generateActiveHero = useEditorStore((state) => state.generateActiveHero);
   const [batchIndex, setBatchIndex] = useState(0);
   const activeHero = heroes.find((hero) => hero.id === activeHeroId) ?? heroes[0];
   const names = nameBatches[batchIndex % nameBatches.length];
-  const regenerateActiveHero = () => {
-    const currentIndex = heroRegenPool.findIndex((hero) => hero.name === activeHero.name);
-    const nextIndex = (Math.max(currentIndex, 0) + 1) % heroRegenPool.length;
-    updateHero(activeHero.id, heroRegenPool[nextIndex]);
-  };
 
   if (mode === "beginner") {
     return (
@@ -226,7 +179,7 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
           ))}
           <RegenButton
             type="button"
-            onClick={regenerateActiveHero}
+            onClick={generateActiveHero}
             className="mt-1"
           >
             重新生成
@@ -321,6 +274,7 @@ function FemaleHeroPanel({ mode }: { mode: EditorMode }) {
       </div>
 
       <div className="flex justify-center">
+        <RegenButton className="mr-3" onClick={generateActiveHero}>重新生成</RegenButton>
         <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
           生成立绘
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />
@@ -337,6 +291,7 @@ function MaleHeroPanel({ mode }: { mode: EditorMode }) {
   const maleHeroAppearance = useEditorStore((state) => state.maleHeroAppearance);
   const setMaleHeroType = useEditorStore((state) => state.setMaleHeroType);
   const setMaleHeroField = useEditorStore((state) => state.setMaleHeroField);
+  const generateMaleHeroSetting = useEditorStore((state) => state.generateMaleHeroSetting);
   const selectedType = useMemo(
     () => MALE_HERO_TYPES.find((item) => item.id === maleHeroType) ?? MALE_HERO_TYPES[0],
     [maleHeroType],
@@ -382,6 +337,7 @@ function MaleHeroPanel({ mode }: { mode: EditorMode }) {
       ) : null}
 
       <div className="flex justify-center">
+        <RegenButton className="mr-3" onClick={generateMaleHeroSetting}>重新生成</RegenButton>
         <button className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)]" type="button">
           生成立绘
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />

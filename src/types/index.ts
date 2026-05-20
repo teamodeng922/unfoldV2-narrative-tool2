@@ -93,6 +93,32 @@ export type HeroCharacter = {
   appearance: string;
 };
 
+export type PlotKey = "opening" | "develop" | "climax" | "ending";
+
+export type PlotValues = Record<PlotKey, string>;
+
+export type CharacterPlotLine = {
+  id: string;
+  title: string;
+  values: PlotValues;
+};
+
+export type TimeSlot = "上午" | "下午" | "晚上";
+
+export type SceneLocation = {
+  id: string;
+  name: string;
+  times: TimeSlot[];
+  condition: string;
+  roles: string[];
+};
+
+export type SceneAction = {
+  id: string;
+  name: string;
+  desc: string;
+};
+
 export type Outline = {
   id: number;
   title: string;

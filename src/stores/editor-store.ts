@@ -2,16 +2,22 @@
 
 import { create } from "zustand";
 import { GAME_NAMES } from "@/src/data/game-names";
+import { OUTLINES_MAP, DEFAULT_OUTLINES } from "@/src/data/outlines";
 import { WORLD_MECHANIC_MAP } from "@/src/data/world-mechanic-map";
 import { WORLDS } from "@/src/data/worlds";
 import type {
   ArtStyleId,
+  CharacterPlotLine,
   EditorMode,
   FemaleHeroineTypeId,
   GameTypeId,
   HeroCharacter,
   MaleHeroTypeId,
+  PlotKey,
+  PlotValues,
   ProportionId,
+  SceneAction,
+  SceneLocation,
   StepDefinition,
   StepId,
   WorldSettings,
@@ -53,11 +59,18 @@ type EditorState = {
   femaleHeroineAge: string;
   femaleHeroineIdentity: string;
   femaleHeroineAppearance: string;
+  mainPlot: PlotValues;
+  characterLines: CharacterPlotLine[];
+  locations: SceneLocation[];
+  actions: SceneAction[];
+  totalDays: string;
+  sceneStages: Record<"guide" | "free" | "mid" | "late", string>;
   setMode: (mode: EditorMode | null) => void;
   setStep: (step: StepId) => void;
   setWorldSettings: (worldSettings: WorldSettings) => void;
   setGameName: (gameName: string) => void;
   generateWorldOutline: () => void;
+  generateMechanics: () => void;
   setMechTypes: (mechTypes: GameTypeId[]) => void;
   toggleMechanic: (mechanicId: GameTypeId) => void;
   moveMechanic: (mechanicId: GameTypeId, direction: "up" | "down") => void;
@@ -68,6 +81,8 @@ type EditorState = {
   addHero: () => void;
   setMaleHeroType: (heroType: MaleHeroTypeId) => void;
   setMaleHeroField: (field: "maleHeroAge" | "maleHeroIdentity" | "maleHeroAppearance", value: string) => void;
+  generateActiveHero: () => void;
+  generateMaleHeroSetting: () => void;
   setActiveHeroineId: (heroineId: string) => void;
   updateHeroine: (heroineId: string, patch: Partial<HeroCharacter>) => void;
   addHeroine: () => void;
@@ -76,6 +91,16 @@ type EditorState = {
     field: "femaleHeroineAge" | "femaleHeroineIdentity" | "femaleHeroineAppearance",
     value: string,
   ) => void;
+  generateActiveHeroine: () => void;
+  generateFemaleHeroineSetting: () => void;
+  setMainPlotValue: (key: PlotKey, value: string) => void;
+  generateMainPlot: () => void;
+  generateCharacterLine: (lineId: string) => void;
+  setLocations: (locations: SceneLocation[]) => void;
+  setActions: (actions: SceneAction[]) => void;
+  setTotalDays: (totalDays: string) => void;
+  setSceneStage: (stage: "guide" | "free" | "mid" | "late", value: string) => void;
+  generateScenes: () => void;
   selectGender: (gender: WorldSettings["gender"]) => void;
   selectEra: (era: WorldSettings["era"]) => void;
   selectWorldType: (worldType: string) => void;
@@ -207,6 +232,152 @@ const heroinePool: HeroCharacter[] = [
   },
 ];
 
+const initialMainPlot: PlotValues = {
+  opening: "主角在命运的夹缝中进入新的世界，第一次看见权力、情感与危险交织的真实面。",
+  develop: "关键人物陆续登场，旧秘密被一点点揭开，主角开始在不同阵营之间做出选择。",
+  climax: "所有关系与矛盾集中爆发，信任被考验，主角必须付出代价换取真正的主动权。",
+  ending: "世界危机迎来结算，角色关系落定，主角走向由选择共同塑造的最终结局。",
+};
+
+const initialFemaleLines: CharacterPlotLine[] = [
+  {
+    id: "xiao",
+    title: "萧夜寒 + 你",
+    values: {
+      opening: "冷宫雪夜，你误入禁地，第一次看见他从黑暗中抬眼。",
+      develop: "他教你读懂宫中暗语，你也逐渐发现他藏起的旧伤。",
+      climax: "夺嫡风暴中，他愿把唯一退路让给你，却也把真心暴露在刀锋前。",
+      ending: "若你选择相信，他会与你共同走出长夜；若你退后，他仍会替你守住最后一盏灯。",
+    },
+  },
+  {
+    id: "shen",
+    title: "沈墨尘 + 你",
+    values: {
+      opening: "练武场上，他用漫不经心的笑替你挡下一场羞辱。",
+      develop: "你发现他的轻佻只是伪装，真正的他比任何人都清醒。",
+      climax: "边军与朝堂冲突爆发，他必须在家族忠义与你之间做出选择。",
+      ending: "你们可能并肩策马离开，也可能在宫门前把未说出口的话永远藏起。",
+    },
+  },
+];
+
+const initialMaleLines: CharacterPlotLine[] = [
+  {
+    id: "su",
+    title: "你 + 苏挽月",
+    values: {
+      opening: "你在雨夜受伤，被苏挽月藏进医馆后院。",
+      develop: "她帮你处理伤口，也一点点看穿你不肯说出口的来历。",
+      climax: "敌人追至城中，她第一次违背家训，将你推向生路。",
+      ending: "若你回头，她会与你并肩；若你远走，她会把那枚旧铃留给你。",
+    },
+  },
+  {
+    id: "liu",
+    title: "你 + 柳如烟",
+    values: {
+      opening: "你在黑市交易中遇见柳如烟，她一句话便拆穿你的伪装。",
+      develop: "你们互相利用，却在一次次试探里生出危险的默契。",
+      climax: "情报网崩塌，她把最致命的秘密交到你手中。",
+      ending: "你们可能共享胜利，也可能在真相揭开后成为彼此最锋利的遗憾。",
+    },
+  },
+];
+
+const initialStages = {
+  guide: "引导期 1-3 天：通过固定事件建立世界规则、初遇关键角色。",
+  free: "自由期第 4 天起：开放主要地点，让玩家通过行动积累关系和线索。",
+  mid: "中期大事件约第 15 天：主线危机第一次集中爆发，迫使玩家站队。",
+  late: "后期 20-30 天：地点开放条件收紧，角色线与主线进入最终结算。",
+};
+
+const initialLocations: SceneLocation[] = [
+  { id: "garden", name: "御花园", times: ["上午", "下午", "晚上"], condition: "默认开放", roles: ["萧夜寒", "苏挽月"] },
+  { id: "training", name: "练武场", times: ["上午", "下午"], condition: "第4天后开放", roles: ["沈墨尘"] },
+  { id: "clinic", name: "太医院", times: ["上午", "下午", "晚上"], condition: "触发受伤事件后开放", roles: ["萧夜寒", "顾渊"] },
+  { id: "study", name: "书房", times: ["下午", "晚上"], condition: "才智达到10后开放", roles: ["顾渊"] },
+  { id: "bedroom", name: "寝宫", times: ["晚上"], condition: "每日固定返回", roles: ["你"] },
+  { id: "wall-path", name: "宫墙小道", times: ["下午", "晚上"], condition: "完成一次夜探后开放", roles: ["沈墨尘", "柳如烟"] },
+  { id: "cold-palace", name: "冷宫", times: ["晚上"], condition: "主线第3天后开放", roles: ["萧夜寒"] },
+];
+
+const initialActions: SceneAction[] = [
+  { id: "explore", name: "探索地点", desc: "在当前地点搜索线索、触发随机事件。" },
+  { id: "meet", name: "去找某人", desc: "主动前往角色所在地点，触发互动剧情。" },
+  { id: "train", name: "提升属性", desc: "消耗一个时段，提高四维养成数值。" },
+  { id: "rest", name: "休息恢复", desc: "回复体力或理智，可能错过部分限时事件。" },
+  { id: "investigate", name: "调查线索", desc: "消耗线索点推进谜团或主线真相。" },
+];
+
+function buildMainPlot(worldType: string, seed: number): PlotValues {
+  const outlines = OUTLINES_MAP[worldType] ?? DEFAULT_OUTLINES;
+  const outline = outlines[seed % outlines.length] ?? outlines[0];
+  return {
+    opening: `${outline.title}成为开端：${outline.desc}`,
+    develop: `围绕「${outline.factions}」展开探索，玩家在日常行动中逐步接近核心人物。`,
+    climax: `${outline.crisis}，所有角色关系和阵营选择被推到台前。`,
+    ending: `${outline.mystery}将决定最终真相，结局会随好感、阵营与关键选择分化。`,
+  };
+}
+
+function buildCharacterLines(gender: WorldSettings["gender"], seed: number) {
+  const baseLines = gender === "female" ? initialFemaleLines : initialMaleLines;
+  const variants = [
+    ["一次偶然相遇让你们被迫同行，最初的试探里藏着戒备。", "共同经历让关系逐渐松动，对方开始交出隐秘软肋。", "危机逼近时，信任与自保之间只剩一次选择。", "这条线会根据选择收束为守护、分离，或迟来的坦白。"],
+    ["你在最狼狈的时刻撞见对方，也撞见不该被看见的秘密。", "对方一边推开你，一边在暗处替你清路。", "旧案翻出真相，你们依赖彼此的理由被彻底撕开。", "你可以把对方拉回人间，也可能亲手结束这段牵制。"],
+    ["一个看似普通的约定成为起点，你们从互相利用开始靠近。", "日常互动积累出细小信任，连沉默都有了只有你们懂的含义。", "外部压力集中爆发，对方必须公开立场，你也要回应这份偏爱。", "若选择并肩，长夜会结束；若选择退后，遗憾会成为最后的灯。"],
+  ];
+  const picked = variants[seed % variants.length];
+
+  return baseLines.map((line, index) => ({
+    ...line,
+    values: {
+      opening: `${line.title}：${picked[0]}`,
+      develop: picked[1 + (index % 2)],
+      climax: picked[2],
+      ending: picked[3],
+    },
+  }));
+}
+
+function buildScenes(worldType: string, seed: number) {
+  const ancient = worldType.includes("宫") || worldType.includes("帝") || worldType.includes("将");
+  const nameSets = ancient
+    ? [
+        ["御花园", "练武场", "太医院", "书房", "寝宫", "宫墙小道", "冷宫"],
+        ["含章殿", "玄武门", "司药局", "藏书阁", "偏殿", "月廊", "废苑"],
+      ]
+    : [
+        ["咖啡馆", "事务所", "医院", "图书馆", "公寓", "天台", "旧仓库"],
+        ["社团楼", "训练室", "档案馆", "美术馆", "车站", "地下街", "秘密基地"],
+      ];
+  const names = nameSets[seed % nameSets.length];
+  const locations = names.map((name, index) => ({
+    id: `location-${index + 1}`,
+    name,
+    times: index % 3 === 0 ? ["上午", "下午", "晚上"] : index % 3 === 1 ? ["上午", "下午"] : ["下午", "晚上"],
+    condition: index < 2 ? "默认开放" : `主线第${index + 2}天后开放`,
+    roles: index % 2 === 0 ? ["萧夜寒", "苏挽月"] : ["沈墨尘", "顾渊"],
+  })) satisfies SceneLocation[];
+
+  const actions: SceneAction[] = [
+    { id: "explore", name: "探索地点", desc: `在「${worldType}」的关键地点搜索线索、触发随机事件。` },
+    { id: "meet", name: "去找某人", desc: "主动前往角色所在地点，推进好感与专属剧情。" },
+    { id: "train", name: "提升属性", desc: "消耗一个时段提升四维属性，解锁后续分支。" },
+    { id: "rest", name: "休息恢复", desc: "恢复状态并整理情报，但可能错过限时事件。" },
+    { id: "investigate", name: "调查线索", desc: "消耗线索点推进主线谜团或阵营真相。" },
+  ];
+
+  return { locations, actions };
+}
+
+function defaultMechanics(worldType: string): GameTypeId[] {
+  const recommended = WORLD_MECHANIC_MAP[worldType] ?? ["romance", "raising"];
+  const openOnly = recommended.filter((id) => id === "romance" || id === "raising");
+  return openOnly.length ? openOnly : ["romance", "raising"];
+}
+
 export const useEditorStore = create<EditorState>((set, get) => ({
   mode: null,
   step: "world",
@@ -229,6 +400,12 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   femaleHeroineAge: "21",
   femaleHeroineIdentity: "出身普通却不愿被命运安排，正在为自己争取真正的选择权。",
   femaleHeroineAppearance: "眉眼清亮，身形利落，衣着简洁但有锋芒。",
+  mainPlot: initialMainPlot,
+  characterLines: initialFemaleLines,
+  locations: initialLocations,
+  actions: initialActions,
+  totalDays: "30",
+  sceneStages: initialStages,
   setMode: (mode) =>
     set({
       mode,
@@ -246,12 +423,23 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   generateWorldOutline: () =>
     set((state) => {
       const nextSeed = state.worldOutlineSeed + 1;
+      const nextMechanics = defaultMechanics(state.worldSettings.worldType);
+      const nextScenes = buildScenes(state.worldSettings.worldType, nextSeed);
 
       return {
         worldOutlineSeed: nextSeed,
         gameName: getGeneratedGameName(state.worldSettings.worldType, nextSeed),
+        mechTypes: nextMechanics,
+        mainPlot: buildMainPlot(state.worldSettings.worldType, nextSeed),
+        characterLines: buildCharacterLines(state.worldSettings.gender, nextSeed),
+        locations: nextScenes.locations,
+        actions: nextScenes.actions,
       };
     }),
+  generateMechanics: () =>
+    set((state) => ({
+      mechTypes: defaultMechanics(state.worldSettings.worldType),
+    })),
   setMechTypes: (mechTypes) => set({ mechTypes }),
   toggleMechanic: (mechanicId) =>
     set((state) => {
@@ -307,6 +495,39 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     }),
   setMaleHeroType: (maleHeroType) => set({ maleHeroType }),
   setMaleHeroField: (field, value) => set({ [field]: value }),
+  generateActiveHero: () =>
+    set((state) => {
+      const activeHero = state.heroes.find((hero) => hero.id === state.activeHeroId) ?? state.heroes[0];
+      const currentIndex = heroPool.findIndex((hero) => hero.name === activeHero.name);
+      const nextHero = heroPool[(Math.max(currentIndex, 0) + 1) % heroPool.length];
+      return {
+        heroes: state.heroes.map((hero) =>
+          hero.id === activeHero.id ? { ...nextHero, id: hero.id } : hero,
+        ),
+      };
+    }),
+  generateMaleHeroSetting: () =>
+    set((state) => {
+      const seed = state.worldOutlineSeed + state.maleHeroAge.length;
+      const variants = [
+        {
+          maleHeroAge: "22",
+          maleHeroIdentity: "不受宠的边缘皇子，从冷宫与废墟中重新组织自己的势力。",
+          maleHeroAppearance: "身形修长，眉目沉静，常穿不起眼的深色衣袍，腰间藏着旧玉佩。",
+        },
+        {
+          maleHeroAge: "25",
+          maleHeroIdentity: "被流放归来的旧臣之子，表面收敛，暗中掌握一条隐秘情报线。",
+          maleHeroAppearance: "黑发束起，眼尾锋利，衣饰克制却总带着战场留下的旧痕。",
+        },
+        {
+          maleHeroAge: "27",
+          maleHeroIdentity: "新晋权臣，擅长在宴席与朝局之间布置退路。",
+          maleHeroAppearance: "肩背挺拔，常着深色官服，笑意温和但目光极冷。",
+        },
+      ];
+      return variants[seed % variants.length];
+    }),
   setActiveHeroineId: (activeHeroineId) => set({ activeHeroineId }),
   updateHeroine: (heroineId, patch) =>
     set((state) => ({
@@ -328,32 +549,128 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     }),
   setFemaleHeroineType: (femaleHeroineType) => set({ femaleHeroineType }),
   setFemaleHeroineField: (field, value) => set({ [field]: value }),
+  generateActiveHeroine: () =>
+    set((state) => {
+      const activeHeroine =
+        state.heroines.find((heroine) => heroine.id === state.activeHeroineId) ?? state.heroines[0];
+      const currentIndex = heroinePool.findIndex((heroine) => heroine.name === activeHeroine.name);
+      const nextHeroine = heroinePool[(Math.max(currentIndex, 0) + 1) % heroinePool.length];
+      return {
+        heroines: state.heroines.map((heroine) =>
+          heroine.id === activeHeroine.id ? { ...nextHeroine, id: heroine.id } : heroine,
+        ),
+      };
+    }),
+  generateFemaleHeroineSetting: () =>
+    set((state) => {
+      const seed = state.worldOutlineSeed + state.femaleHeroineAge.length;
+      const variants = [
+        {
+          femaleHeroineAge: "21",
+          femaleHeroineIdentity: "出身普通却不愿被命运安排，正在为自己争取真正的选择权。",
+          femaleHeroineAppearance: "眉眼清亮，身形利落，衣着简洁但有锋芒。",
+        },
+        {
+          femaleHeroineAge: "19",
+          femaleHeroineIdentity: "刚入宫的采女，被分配到最偏僻的浣衣局，却记得每一次轻慢。",
+          femaleHeroineAppearance: "容貌清丽但不张扬，眉眼间有一股不服输的劲。",
+        },
+        {
+          femaleHeroineAge: "24",
+          femaleHeroineIdentity: "亡国旧族之后，表面温顺入局，暗中寻找翻盘机会。",
+          femaleHeroineAppearance: "衣着素净，举止端方，笑起来温和却从不交出底牌。",
+        },
+      ];
+      return variants[seed % variants.length];
+    }),
+  setMainPlotValue: (key, value) =>
+    set((state) => ({
+      mainPlot: { ...state.mainPlot, [key]: value },
+    })),
+  generateMainPlot: () =>
+    set((state) => ({
+      worldOutlineSeed: state.worldOutlineSeed + 1,
+      mainPlot: buildMainPlot(state.worldSettings.worldType, state.worldOutlineSeed + 1),
+    })),
+  generateCharacterLine: (lineId) =>
+    set((state) => {
+      const nextSeed = state.worldOutlineSeed + 1;
+      const generatedLines = buildCharacterLines(state.worldSettings.gender, nextSeed);
+      const generatedLine = generatedLines.find((line) => line.id === lineId);
+      if (!generatedLine) return { worldOutlineSeed: nextSeed };
+      return {
+        worldOutlineSeed: nextSeed,
+        characterLines: state.characterLines.map((line) =>
+          line.id === lineId ? generatedLine : line,
+        ),
+      };
+    }),
+  setLocations: (locations) => set({ locations }),
+  setActions: (actions) => set({ actions }),
+  setTotalDays: (totalDays) => set({ totalDays }),
+  setSceneStage: (stage, value) =>
+    set((state) => ({
+      sceneStages: { ...state.sceneStages, [stage]: value },
+    })),
+  generateScenes: () =>
+    set((state) => {
+      const nextSeed = state.worldOutlineSeed + 1;
+      const nextScenes = buildScenes(state.worldSettings.worldType, nextSeed);
+      return {
+        worldOutlineSeed: nextSeed,
+        locations: nextScenes.locations,
+        actions: nextScenes.actions,
+        sceneStages: {
+          guide: `引导期 1-3 天：围绕「${state.worldSettings.worldType}」建立目标、地点与关键人物。`,
+          free: "自由期第 4 天起：开放主要地点，允许玩家自由安排探索、互动和养成。",
+          mid: "中期大事件约第 15 天：阵营矛盾集中爆发，角色关系进入不可回避的选择点。",
+          late: "后期 20-30 天：地点开放条件收紧，主线与角色线共同进入最终结算。",
+        },
+      };
+    }),
   selectGender: (gender) => {
     const era = "ancient";
     const worldType = WORLDS[gender][era][0];
+    const nextScenes = buildScenes(worldType, 0);
 
     set({
       worldSettings: { gender, era, worldType },
       gameName: GAME_NAMES[worldType] ?? "",
-      mechTypes: WORLD_MECHANIC_MAP[worldType] ?? ["romance"],
+      mechTypes: defaultMechanics(worldType),
+      mainPlot: buildMainPlot(worldType, 0),
+      characterLines: buildCharacterLines(gender, 0),
+      locations: nextScenes.locations,
+      actions: nextScenes.actions,
     });
   },
   selectEra: (era) => {
     const { gender } = get().worldSettings;
     const worldType = WORLDS[gender][era][0];
+    const nextScenes = buildScenes(worldType, 0);
 
     set({
       worldSettings: { gender, era, worldType },
       gameName: GAME_NAMES[worldType] ?? "",
-      mechTypes: WORLD_MECHANIC_MAP[worldType] ?? ["romance"],
+      mechTypes: defaultMechanics(worldType),
+      mainPlot: buildMainPlot(worldType, 0),
+      characterLines: buildCharacterLines(gender, 0),
+      locations: nextScenes.locations,
+      actions: nextScenes.actions,
     });
   },
   selectWorldType: (worldType) =>
-    set((state) => ({
-      worldSettings: { ...state.worldSettings, worldType },
-      gameName: GAME_NAMES[worldType] ?? state.gameName,
-      mechTypes: WORLD_MECHANIC_MAP[worldType] ?? state.mechTypes,
-    })),
+    set((state) => {
+      const nextScenes = buildScenes(worldType, state.worldOutlineSeed);
+      return {
+        worldSettings: { ...state.worldSettings, worldType },
+        gameName: GAME_NAMES[worldType] ?? state.gameName,
+        mechTypes: defaultMechanics(worldType),
+        mainPlot: buildMainPlot(worldType, state.worldOutlineSeed),
+        characterLines: buildCharacterLines(state.worldSettings.gender, state.worldOutlineSeed),
+        locations: nextScenes.locations,
+        actions: nextScenes.actions,
+      };
+    }),
   markDone: (step) =>
     set((state) => ({
       done: state.done.includes(step) ? state.done : [...state.done, step],

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { RegenField } from "@/src/components/ui/regen-field";
-import type { EditorMode } from "@/src/types";
+import { RegenButton } from "@/src/components/ui/regen-button";
+import { useEditorStore } from "@/src/stores/editor-store";
+import type { EditorMode, SceneAction, SceneLocation, TimeSlot } from "@/src/types";
 import { AppIcon } from "@/src/components/ui/app-icon";
 import { NumberedTitle } from "@/src/components/ui/numbered-title";
 
@@ -10,49 +12,8 @@ type ScenePanelProps = {
   mode: EditorMode;
 };
 
-type TimeSlot = "上午" | "下午" | "晚上";
-
-type LocationItem = {
-  id: string;
-  name: string;
-  times: TimeSlot[];
-  condition: string;
-  roles: string[];
-};
-
-type ActionItem = {
-  id: string;
-  name: string;
-  desc: string;
-};
-
 const timeSlots: TimeSlot[] = ["上午", "下午", "晚上"];
 const roleOptions = ["萧夜寒", "沈墨尘", "顾渊", "苏挽月", "柳如烟", "你"];
-
-const initialStages = {
-  guide: "引导期 1-3 天：通过固定事件建立世界规则、初遇关键角色。",
-  free: "自由期第 4 天起：开放主要地点，让玩家通过行动积累关系和线索。",
-  mid: "中期大事件约第 15 天：主线危机第一次集中爆发，迫使玩家站队。",
-  late: "后期 20-30 天：地点开放条件收紧，角色线与主线进入最终结算。",
-};
-
-const initialLocations: LocationItem[] = [
-  { id: "garden", name: "御花园", times: ["上午", "下午", "晚上"], condition: "默认开放", roles: ["萧夜寒", "苏挽月"] },
-  { id: "training", name: "练武场", times: ["上午", "下午"], condition: "第4天后开放", roles: ["沈墨尘"] },
-  { id: "clinic", name: "太医院", times: ["上午", "下午", "晚上"], condition: "触发受伤事件后开放", roles: ["萧夜寒", "顾渊"] },
-  { id: "study", name: "书房", times: ["下午", "晚上"], condition: "才智达到10后开放", roles: ["顾渊"] },
-  { id: "bedroom", name: "寝宫", times: ["晚上"], condition: "每日固定返回", roles: ["你"] },
-  { id: "wall-path", name: "宫墙小道", times: ["下午", "晚上"], condition: "完成一次夜探后开放", roles: ["沈墨尘", "柳如烟"] },
-  { id: "cold-palace", name: "冷宫", times: ["晚上"], condition: "主线第3天后开放", roles: ["萧夜寒"] },
-];
-
-const initialActions: ActionItem[] = [
-  { id: "explore", name: "探索地点", desc: "在当前地点搜索线索、触发随机事件。" },
-  { id: "meet", name: "去找某人", desc: "主动前往角色所在地点，触发互动剧情。" },
-  { id: "train", name: "提升属性", desc: "消耗一个时段，提高四维养成数值。" },
-  { id: "rest", name: "休息恢复", desc: "回复体力或理智，可能错过部分限时事件。" },
-  { id: "investigate", name: "调查线索", desc: "消耗线索点推进谜团或主线真相。" },
-];
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return <div className="mb-1.5 text-[14px] font-semibold text-white/55">{children}</div>;
@@ -63,23 +24,28 @@ function toggleArrayValue<T>(values: T[], value: T) {
 }
 
 export function ScenePanel({ mode }: ScenePanelProps) {
-  const [totalDays, setTotalDays] = useState("30");
-  const [stages, setStages] = useState(initialStages);
-  const [locations, setLocations] = useState(initialLocations);
-  const [actions, setActions] = useState(initialActions);
+  const totalDays = useEditorStore((state) => state.totalDays);
+  const stages = useEditorStore((state) => state.sceneStages);
+  const locations = useEditorStore((state) => state.locations);
+  const actions = useEditorStore((state) => state.actions);
+  const setTotalDays = useEditorStore((state) => state.setTotalDays);
+  const setSceneStage = useEditorStore((state) => state.setSceneStage);
+  const setLocations = useEditorStore((state) => state.setLocations);
+  const setActions = useEditorStore((state) => state.setActions);
+  const generateScenes = useEditorStore((state) => state.generateScenes);
   const [openLocationIds, setOpenLocationIds] = useState<string[]>([]);
   const [openActionIds, setOpenActionIds] = useState<string[]>([]);
 
-  const updateLocation = (id: string, patch: Partial<LocationItem>) =>
-    setLocations((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
+  const updateLocation = (id: string, patch: Partial<SceneLocation>) =>
+    setLocations(locations.map((item) => (item.id === id ? { ...item, ...patch } : item)));
 
-  const updateAction = (id: string, patch: Partial<ActionItem>) =>
-    setActions((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
+  const updateAction = (id: string, patch: Partial<SceneAction>) =>
+    setActions(actions.map((item) => (item.id === id ? { ...item, ...patch } : item)));
 
   const addLocation = () => {
     const id = `location-${locations.length + 1}`;
-    setLocations((current) => [
-      ...current,
+    setLocations([
+      ...locations,
       { id, name: "新地点", times: ["上午"], condition: "默认开放", roles: ["你"] },
     ]);
     setOpenLocationIds((current) => [...current, id]);
@@ -87,7 +53,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
 
   const addAction = () => {
     const id = `action-${actions.length + 1}`;
-    setActions((current) => [...current, { id, name: "新行动", desc: "描述这个行动类型的效果。" }]);
+    setActions([...actions, { id, name: "新行动", desc: "描述这个行动类型的效果。" }]);
     setOpenActionIds((current) => [...current, id]);
   };
 
@@ -113,10 +79,10 @@ export function ScenePanel({ mode }: ScenePanelProps) {
               className="h-9 w-28 rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45"
             />
           </div>
-          <RegenField label="引导期 1-3 天" value={stages.guide} onChange={(value) => setStages((current) => ({ ...current, guide: value }))} />
-          <RegenField label="自由期第 4 天起" value={stages.free} onChange={(value) => setStages((current) => ({ ...current, free: value }))} />
-          <RegenField label="中期大事件约 15 天" value={stages.mid} onChange={(value) => setStages((current) => ({ ...current, mid: value }))} />
-          <RegenField label="后期 20-30 天" value={stages.late} onChange={(value) => setStages((current) => ({ ...current, late: value }))} />
+          <RegenField label="引导期 1-3 天" value={stages.guide} onChange={(value) => setSceneStage("guide", value)} />
+          <RegenField label="自由期第 4 天起" value={stages.free} onChange={(value) => setSceneStage("free", value)} />
+          <RegenField label="中期大事件约 15 天" value={stages.mid} onChange={(value) => setSceneStage("mid", value)} />
+          <RegenField label="后期 20-30 天" value={stages.late} onChange={(value) => setSceneStage("late", value)} />
         </section>
       ) : null}
 
@@ -182,7 +148,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
                       ))}
                     </div>
                     <div className="mb-4 flex h-24 items-center justify-center rounded-lg border border-dashed border-white/[0.14] bg-[#111217] text-[13px] text-white/40">场景图上传区</div>
-                    <button type="button" onClick={() => setLocations((current) => current.filter((item) => item.id !== location.id))} className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-1.5 text-[12px] text-red-200/70">
+                    <button type="button" onClick={() => setLocations(locations.filter((item) => item.id !== location.id))} className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-1.5 text-[12px] text-red-200/70">
                       删除地点
                     </button>
                   </div>
@@ -235,7 +201,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
                     <input value={action.name} onChange={(event) => updateAction(action.id, { name: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
                     <FieldLabel>说明</FieldLabel>
                     <input value={action.desc} onChange={(event) => updateAction(action.id, { desc: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
-                    <button type="button" onClick={() => setActions((current) => current.filter((item) => item.id !== action.id))} className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-1.5 text-[12px] text-red-200/70">
+                    <button type="button" onClick={() => setActions(actions.filter((item) => item.id !== action.id))} className="rounded-lg border border-red-400/20 bg-red-400/10 px-3 py-1.5 text-[12px] text-red-200/70">
                       删除行动
                     </button>
                   </div>
@@ -253,6 +219,7 @@ export function ScenePanel({ mode }: ScenePanelProps) {
       </section>
 
       <div className="flex justify-center">
+        <RegenButton className="mr-3" onClick={generateScenes}>重新生成</RegenButton>
         <button type="button" className="rounded-lg border border-[#2F8CFF]/65 bg-[#0D2B52] px-5 py-2 text-[14px] font-semibold text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] transition hover:bg-[#123967]">
           生成场景图
           <AppIcon className="ml-1.5 inline-block align-[-2px]" name="chevron-right" size={14} />

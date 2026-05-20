@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { GAME_TYPES } from "@/src/data/game-types";
+import { RegenButton } from "@/src/components/ui/regen-button";
 import { useEditorStore } from "@/src/stores/editor-store";
 import type { EditorMode, GameTypeId } from "@/src/types";
 import { AppIcon, type AppIconName } from "@/src/components/ui/app-icon";
@@ -24,6 +25,7 @@ export function MechanicPanel(_props: MechanicPanelProps) {
   void _props;
   const worldType = useEditorStore((state) => state.worldSettings.worldType);
   const setMechTypes = useEditorStore((state) => state.setMechTypes);
+  const generateMechanics = useEditorStore((state) => state.generateMechanics);
   const [expandedIds, setExpandedIds] = useState<GameTypeId[]>([]);
   const sortedGameTypes = [
     ...GAME_TYPES.filter((gameType) => openMechanics.includes(gameType.id)),
@@ -130,6 +132,9 @@ export function MechanicPanel(_props: MechanicPanelProps) {
       <p className="mt-5 text-center text-[13px] tracking-[0.08em] text-white/42">
         更多玩法敬请期待
       </p>
+      <div className="mt-5 flex justify-center">
+        <RegenButton onClick={generateMechanics}>重新推荐玩法</RegenButton>
+      </div>
     </div>
   );
 }
