@@ -60,6 +60,7 @@ const stepPrompts: Record<StepId, { intro: string; placeholder: string; reply: s
 
 export function AiChatBar() {
   const step = useEditorStore((state) => state.step);
+  const applyAiInstruction = useEditorStore((state) => state.applyAiInstruction);
   const prompt = useMemo(() => stepPrompts[step], [step]);
   const [message, setMessage] = useState("");
   const [messagesByStep, setMessagesByStep] = useState<Partial<Record<StepId, ChatMessage[]>>>(
@@ -78,6 +79,7 @@ export function AiChatBar() {
     if (!text) return;
 
     const nextId = Date.now();
+    const reply = applyAiInstruction(text);
     setMessagesByStep((current) => ({
       ...current,
       [step]: [
@@ -86,7 +88,7 @@ export function AiChatBar() {
         {
           id: nextId + 1,
           role: "ai",
-          text: `${prompt.reply} 已收到你的要求：“${text}”。`,
+          text: reply,
         },
       ],
     }));

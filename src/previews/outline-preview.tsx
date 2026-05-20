@@ -16,6 +16,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
   const worldType = useEditorStore((state) => state.worldSettings.worldType);
   const gameName = useEditorStore((state) => state.gameName);
   const worldOutlineSeed = useEditorStore((state) => state.worldOutlineSeed);
+  const mainPlot = useEditorStore((state) => state.mainPlot);
   const setGameName = useEditorStore((state) => state.setGameName);
   const generateWorldOutline = useEditorStore((state) => state.generateWorldOutline);
   const [selectedIdByWorld, setSelectedIdByWorld] = useState<Record<string, number>>({});
@@ -30,7 +31,13 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
   const selectedId = selectedIdByWorld[selectionKey] ?? generatedOutline?.id ?? 1;
   const expanded = expandedByWorld[worldType] ?? false;
   const selectedOutline = outlines.find((outline) => outline.id === selectedId) ?? outlines[0];
-  const draftDesc = draftDescByWorld[worldType]?.[selectedOutline.id] ?? selectedOutline.desc;
+  const generatedCards = [
+    { id: 1, title: selectedOutline.title, desc: mainPlot.opening },
+    { id: 2, title: outlines[1]?.title ?? "中段推进", desc: mainPlot.develop },
+    { id: 3, title: outlines[2]?.title ?? "终局爆发", desc: mainPlot.climax },
+  ];
+  const selectedCard = generatedCards.find((outline) => outline.id === selectedId) ?? generatedCards[0];
+  const draftDesc = draftDescByWorld[worldType]?.[selectedCard.id] ?? selectedCard.desc;
 
   return (
     <div className="w-full py-4">
@@ -55,8 +62,8 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
       <section className="mb-6">
         <NumberedTitle className="text-white/55" num="02">世界大纲</NumberedTitle>
         <div className="grid grid-cols-3 gap-3">
-          {outlines.map((outline) => {
-            const active = outline.id === selectedOutline.id;
+          {generatedCards.map((outline) => {
+            const active = outline.id === selectedCard.id;
 
             return (
               <button
@@ -110,7 +117,7 @@ export function OutlinePreview({ mode }: OutlinePreviewProps) {
                 ...current,
                 [worldType]: {
                   ...current[worldType],
-                  [selectedOutline.id]: event.target.value,
+                  [selectedCard.id]: event.target.value,
                 },
               }))
             }

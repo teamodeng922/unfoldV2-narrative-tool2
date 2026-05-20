@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { GAME_NAMES } from "@/src/data/game-names";
 import { OUTLINES_MAP, DEFAULT_OUTLINES } from "@/src/data/outlines";
 import { WORLD_MECHANIC_MAP } from "@/src/data/world-mechanic-map";
@@ -38,6 +39,7 @@ export const getSteps = (mode: EditorMode) =>
   ALL_STEPS.filter((step) => step.mode === "all" || step.mode === mode);
 
 type EditorState = {
+  hasHydrated: boolean;
   mode: EditorMode | null;
   step: StepId;
   done: StepId[];
@@ -101,11 +103,53 @@ type EditorState = {
   setTotalDays: (totalDays: string) => void;
   setSceneStage: (stage: "guide" | "free" | "mid" | "late", value: string) => void;
   generateScenes: () => void;
+  applyAiInstruction: (text: string) => string;
+  setHasHydrated: (hasHydrated: boolean) => void;
+  exportProject: () => string;
+  importProject: (json: string) => { ok: boolean; message: string };
   selectGender: (gender: WorldSettings["gender"]) => void;
   selectEra: (era: WorldSettings["era"]) => void;
   selectWorldType: (worldType: string) => void;
   markDone: (step: StepId) => void;
   goNext: (step: StepId) => void;
+};
+
+type PersistedEditorState = Pick<
+  EditorState,
+  | "mode"
+  | "step"
+  | "done"
+  | "worldSettings"
+  | "gameName"
+  | "worldOutlineSeed"
+  | "mechTypes"
+  | "artStyle"
+  | "proportion"
+  | "heroes"
+  | "activeHeroId"
+  | "maleHeroType"
+  | "maleHeroAge"
+  | "maleHeroIdentity"
+  | "maleHeroAppearance"
+  | "heroines"
+  | "activeHeroineId"
+  | "femaleHeroineType"
+  | "femaleHeroineAge"
+  | "femaleHeroineIdentity"
+  | "femaleHeroineAppearance"
+  | "mainPlot"
+  | "characterLines"
+  | "locations"
+  | "actions"
+  | "totalDays"
+  | "sceneStages"
+>;
+
+type ProjectSnapshot = {
+  app: "unfold";
+  version: 1;
+  exportedAt: string;
+  project: PersistedEditorState;
 };
 
 const initialWorldSettings: WorldSettings = {
@@ -378,7 +422,51 @@ function defaultMechanics(worldType: string): GameTypeId[] {
   return openOnly.length ? openOnly : ["romance", "raising"];
 }
 
-export const useEditorStore = create<EditorState>((set, get) => ({
+const toProjectState = (state: EditorState): PersistedEditorState => ({
+  mode: state.mode,
+  step: state.step,
+  done: state.done,
+  worldSettings: state.worldSettings,
+  gameName: state.gameName,
+  worldOutlineSeed: state.worldOutlineSeed,
+  mechTypes: state.mechTypes,
+  artStyle: state.artStyle,
+  proportion: state.proportion,
+  heroes: state.heroes,
+  activeHeroId: state.activeHeroId,
+  maleHeroType: state.maleHeroType,
+  maleHeroAge: state.maleHeroAge,
+  maleHeroIdentity: state.maleHeroIdentity,
+  maleHeroAppearance: state.maleHeroAppearance,
+  heroines: state.heroines,
+  activeHeroineId: state.activeHeroineId,
+  femaleHeroineType: state.femaleHeroineType,
+  femaleHeroineAge: state.femaleHeroineAge,
+  femaleHeroineIdentity: state.femaleHeroineIdentity,
+  femaleHeroineAppearance: state.femaleHeroineAppearance,
+  mainPlot: state.mainPlot,
+  characterLines: state.characterLines,
+  locations: state.locations,
+  actions: state.actions,
+  totalDays: state.totalDays,
+  sceneStages: state.sceneStages,
+});
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const normalizeImportedProject = (value: unknown): Partial<PersistedEditorState> | null => {
+  if (!isRecord(value)) return null;
+  const project = isRecord(value.project) ? value.project : value;
+  if (!isRecord(project)) return null;
+
+  return project as Partial<PersistedEditorState>;
+};
+
+export const useEditorStore = create<EditorState>()(
+  persist(
+    (set, get) => ({
+  hasHydrated: false,
   mode: null,
   step: "world",
   done: [],
@@ -406,6 +494,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   actions: initialActions,
   totalDays: "30",
   sceneStages: initialStages,
+  setHasHydrated: (hasHydrated) => set({ hasHydrated }),
   setMode: (mode) =>
     set({
       mode,
@@ -628,6 +717,179 @@ export const useEditorStore = create<EditorState>((set, get) => ({
         },
       };
     }),
+  applyAiInstruction: (text) => {
+    const state = get();
+    const normalized = text.toLowerCase();
+    const hasDark = /黑暗|更暗|阴暗|压抑|残酷|危险/.test(text);
+    const hasMystery = /悬疑|推理|线索|真相|谜/.test(text);
+    const hasStrategy = /策略|谋略|权谋|势力|博弈/.test(text);
+    const hasStrong = /强势|大女主|独立|不求人/.test(text);
+    const hasAssassination = /刺杀|暗杀|血案|袭击/.test(text);
+    const hasSecretRoom = /密室|隐藏地点|秘密地点/.test(text);
+    const hasShorten = /缩短|减少天数|短一点/.test(text);
+
+    if (state.step === "world") {
+      if (hasDark) {
+        set({
+          gameName: state.gameName.includes("暗") ? state.gameName : `${state.gameName}：暗卷`,
+          mainPlot: {
+            opening: "主角踏入一个更阴冷的世界：表面的秩序仍在，暗处却早已被背叛、旧案与权力交易腐蚀。",
+            develop: "每个阵营都藏着不能公开的罪证，角色关系不再只是亲近或疏远，而是互相试探、利用与交换底牌。",
+            climax: "皇室秘闻被迫浮出水面，昔日盟友可能倒戈，主角必须在保全自己和揭开真相之间付出代价。",
+            ending: "最终结局不再只有胜利或失败，而取决于主角愿意留下多少善意、牺牲多少信任。",
+          },
+        });
+        return "已调整世界设定：整体氛围变得更黑暗，主线加入了旧案、背叛和权力交易。";
+      }
+
+      get().generateWorldOutline();
+      return "已根据你的描述重新生成世界名称和世界大纲。";
+    }
+
+    if (state.step === "mechanic") {
+      if (hasMystery) {
+        set({ mechTypes: ["romance", "raising"] });
+        return "已调整游戏玩法：当前开放玩法仍保留恋爱攻略和养成模拟，并把体验说明往线索与真相压力靠拢。";
+      }
+      if (hasStrategy) {
+        set({ mechTypes: ["romance", "raising"] });
+        return "已调整游戏玩法：恋爱攻略保留为主驱动，养成模拟会承担更多权衡、节奏和分支压力。";
+      }
+      get().generateMechanics();
+      return "已重新推荐当前世界适配的玩法组合。";
+    }
+
+    if (state.step === "hero") {
+      if (state.worldSettings.gender === "female") {
+        const activeHero = state.heroes.find((hero) => hero.id === state.activeHeroId);
+        if (activeHero) {
+          set({
+            heroes: state.heroes.map((hero) =>
+              hero.id === activeHero.id
+                ? {
+                    ...hero,
+                    outerTags: hasDark ? ["阴郁"] : ["高冷"],
+                    innerTags: hasDark ? ["偏执"] : ["深情"],
+                    identity: hasDark
+                      ? "废太子旧党暗中扶持的影子继承人，手里握着足以掀翻朝局的血案证据。"
+                      : "冷宫废皇子，表面失势，暗中仍有人替他传递消息。",
+                    appearance: hasDark
+                      ? "眉眼苍白冷峻，常着无纹黑衣，指节有旧伤，笑意里带着危险的克制。"
+                      : hero.appearance,
+                  }
+                : hero,
+            ),
+          });
+        }
+        return "已调整男主设定：他的气质更危险，身份与外貌也同步加深了暗线感。";
+      }
+      get().generateMaleHeroSetting();
+      return "已重新生成男性向男主的身份、年龄和外貌设定。";
+    }
+
+    if (state.step === "heroine") {
+      if (state.worldSettings.gender === "female") {
+        if (hasStrong) {
+          set({
+            femaleHeroineType: "dv",
+            femaleHeroineIdentity: "她不再等待任何人拯救，哪怕被推入权力夹缝，也要亲手拿回选择权。",
+            femaleHeroineAppearance: "眼神清亮坚定，衣着简洁利落，举止克制却有不肯低头的锋芒。",
+          });
+          return "已调整女主设定：她更强势、更独立，身份处境也更主动。";
+        }
+        get().generateFemaleHeroineSetting();
+        return "已重新生成女主的身份、年龄和外貌设定。";
+      }
+      get().generateActiveHeroine();
+      return "已重新生成当前女主角色卡。";
+    }
+
+    if (state.step === "plot") {
+      const nextMainPlot = {
+        opening: hasAssassination
+          ? "开端加入一场突如其来的刺杀：主角在混乱中被迫看见权力与情感交织的真实面。"
+          : state.mainPlot.opening,
+        develop: hasDark
+          ? "发展阶段加入更深的旧案追查，角色之间的帮助都带着交换条件。"
+          : state.mainPlot.develop,
+        climax: hasDark || hasAssassination
+          ? "高潮更残酷：刺杀真凶、阵营背叛与角色关系在同一夜集中爆发。"
+          : state.mainPlot.climax,
+        ending: /开放/.test(text)
+          ? "结局改为开放式：真相揭开后仍留下选择余地，角色关系不被彻底钉死。"
+          : state.mainPlot.ending,
+      };
+      set({ mainPlot: nextMainPlot });
+      return "已调整剧情线：主线节奏和关键冲突已经按你的要求改写。";
+    }
+
+    if (state.step === "scene") {
+      if (hasSecretRoom) {
+        const nextLocation: SceneLocation = {
+          id: `secret-room-${state.locations.length + 1}`,
+          name: "密室",
+          times: ["晚上"],
+          condition: "发现旧案线索后开放",
+          roles: ["萧夜寒", "你"],
+        };
+        set({ locations: [...state.locations, nextLocation] });
+        return "已增加密室地点，并设置为夜晚开放的关键线索场景。";
+      }
+      if (hasShorten) {
+        set({ totalDays: "20" });
+        return "已把游戏总天数缩短到 20 天，节奏会更紧凑。";
+      }
+      get().generateScenes();
+      return "已重新生成地点、行动类型和场景节奏。";
+    }
+
+    return normalized.includes("检查")
+      ? "已检查当前配置：核心内容已经具备，可以继续逐页确认并补充细节。"
+      : "已收到，我会把这条要求用于当前页的内容调整。";
+  },
+  exportProject: () => {
+    const snapshot: ProjectSnapshot = {
+      app: "unfold",
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      project: toProjectState(get()),
+    };
+
+    return JSON.stringify(snapshot, null, 2);
+  },
+  importProject: (json) => {
+    try {
+      const parsed = JSON.parse(json) as unknown;
+      const importedProject = normalizeImportedProject(parsed);
+
+      if (!importedProject) {
+        return { ok: false, message: "这个文件不是可识别的开卷项目 JSON。" };
+      }
+
+      const nextMode = importedProject.mode === "beginner" || importedProject.mode === "pro"
+        ? importedProject.mode
+        : "beginner";
+      const nextSteps = getSteps(nextMode);
+      const importedStep = importedProject.step;
+      const nextStep = nextSteps.some((item) => item.id === importedStep) ? importedStep : "world";
+      const nextDone = Array.isArray(importedProject.done)
+        ? importedProject.done.filter((item): item is StepId =>
+            nextSteps.some((step) => step.id === item),
+          )
+        : [];
+
+      set({
+        ...importedProject,
+        mode: nextMode,
+        step: nextStep,
+        done: nextDone,
+      });
+
+      return { ok: true, message: "项目已导入，可以继续编辑。" };
+    } catch {
+      return { ok: false, message: "JSON 文件读取失败，请确认文件格式正确。" };
+    }
+  },
   selectGender: (gender) => {
     const era = "ancient";
     const worldType = WORLDS[gender][era][0];
@@ -687,4 +949,15 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       set({ step: nextStep });
     }
   },
-}));
+    }),
+    {
+      name: "unfold-editor-project-v2",
+      version: 1,
+      storage: createJSONStorage(() => localStorage),
+      partialize: toProjectState,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    },
+  ),
+);

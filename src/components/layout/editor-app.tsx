@@ -7,6 +7,7 @@ import { useEditorStore } from "@/src/stores/editor-store";
 import type { EditorMode } from "@/src/types";
 
 export function EditorApp() {
+  const hasHydrated = useEditorStore((state) => state.hasHydrated);
   const mode = useEditorStore((state) => state.mode);
   const setMode = useEditorStore((state) => state.setMode);
   const selectGender = useEditorStore((state) => state.selectGender);
@@ -21,6 +22,10 @@ export function EditorApp() {
     setPreflowStartStep(0);
     setSkipPreflowFinale(false);
   }, [selectGender, setMode]);
+
+  if (!hasHydrated) {
+    return <div className="h-screen w-screen bg-[#050509]" />;
+  }
 
   if (!mode && !preflowDone) {
     return (
