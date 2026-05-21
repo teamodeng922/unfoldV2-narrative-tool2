@@ -1,4 +1,5 @@
 import type { Outline, OutlineMap } from "@/src/types";
+import { WORLD_DEFAULT_OUTLINES } from "@/src/data/world-defaults";
 
 export const OUTLINES_MAP: OutlineMap = {
   宫廷后宫: [
@@ -53,6 +54,7 @@ export const OUTLINES_MAP: OutlineMap = {
       mystery: "先帝驾崩的真相，是病逝还是被毒杀？",
     },
   ],
+  ...WORLD_DEFAULT_OUTLINES,
 };
 
 export const DEFAULT_OUTLINES: Outline[] = [

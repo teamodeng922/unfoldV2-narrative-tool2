@@ -1,4 +1,5 @@
 import type { GameNameMap } from "@/src/types";
+import { WORLD_DEFAULT_GAME_NAMES } from "@/src/data/world-defaults";
 
 export const GAME_NAMES: GameNameMap = {
   宫廷后宫: "凤鸣长安",
@@ -29,4 +30,5 @@ export const GAME_NAMES: GameNameMap = {
   赛博朋克: "霓虹暗涌",
   AI觉醒: "造物之叛",
   时空穿梭: "时间囚徒",
+  ...WORLD_DEFAULT_GAME_NAMES,
 };

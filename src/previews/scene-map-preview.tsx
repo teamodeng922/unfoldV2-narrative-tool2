@@ -45,7 +45,9 @@ export function SceneMapPreview() {
             />
             <div className="p-3">
               <p className="text-[14px] font-semibold text-white">{location.name}</p>
-              <p className="mt-1 text-[13px] text-white/42">16:9 场景缩略图</p>
+              <p className="mt-1 text-[13px] text-white/42">
+                {location.effect ? `${location.effect} · ` : ""}16:9 场景缩略图
+              </p>
             </div>
           </article>
         ))}

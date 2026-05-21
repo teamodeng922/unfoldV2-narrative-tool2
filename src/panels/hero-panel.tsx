@@ -27,6 +27,7 @@ const lineMap: Record<string, string> = {
 };
 
 function heroLine(hero: HeroCharacter) {
+  if (hero.intro) return hero.intro;
   const outer = hero.outerTags[0] ?? "高冷";
   const inner = hero.innerTags[0] ?? "深情";
   return lineMap[`${outer}+${inner}`] ?? `他看似${outer}，内心却${inner}，与你的相遇注定改变一切`;

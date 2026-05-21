@@ -91,11 +91,17 @@ export type HeroCharacter = {
   innerTags: string[];
   identity: string;
   appearance: string;
+  intro?: string;
 };
 
 export type PlotKey = "opening" | "develop" | "climax" | "ending";
 
 export type PlotValues = Record<PlotKey, string>;
+
+export type WorldAiPatch = {
+  gameName?: string;
+  mainPlot?: Partial<PlotValues>;
+};
 
 export type CharacterPlotLine = {
   id: string;
@@ -111,6 +117,7 @@ export type SceneLocation = {
   times: TimeSlot[];
   condition: string;
   roles: string[];
+  effect?: string;
 };
 
 export type SceneAction = {
@@ -146,3 +153,27 @@ export type StatSkin = {
 };
 
 export type StatSkinMap = Record<string, StatSkin[]>;
+
+export type WorldHeroDefault = HeroCharacter & {
+  intro: string;
+  plot: PlotValues;
+};
+
+export type WorldHeroineDefault = {
+  typeId: FemaleHeroineTypeId;
+  typeLabel: string;
+  identity: string;
+  appearance: string;
+};
+
+export type WorldDefaultData = {
+  worldType: string;
+  era: Era;
+  gameName: string;
+  outlines: Outline[];
+  heroes: WorldHeroDefault[];
+  heroine: WorldHeroineDefault;
+  mainPlot: PlotValues;
+  characterLines: CharacterPlotLine[];
+  locations: SceneLocation[];
+};

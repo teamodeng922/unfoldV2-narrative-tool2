@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { GAME_NAMES } from "@/src/data/game-names";
 import { OUTLINES_MAP, DEFAULT_OUTLINES } from "@/src/data/outlines";
+import { getWorldDefault } from "@/src/data/world-defaults";
 import { WORLD_MECHANIC_MAP } from "@/src/data/world-mechanic-map";
 import { WORLDS } from "@/src/data/worlds";
 import type {
@@ -22,6 +23,7 @@ import type {
   StepDefinition,
   StepId,
   WorldSettings,
+  WorldAiPatch,
 } from "@/src/types";
 
 export const ALL_STEPS: StepDefinition[] = [
@@ -104,6 +106,7 @@ type EditorState = {
   setSceneStage: (stage: "guide" | "free" | "mid" | "late", value: string) => void;
   generateScenes: () => void;
   applyAiInstruction: (text: string) => string;
+  applyWorldPatch: (patch: WorldAiPatch) => void;
   setHasHydrated: (hasHydrated: boolean) => void;
   exportProject: () => string;
   importProject: (json: string) => { ok: boolean; message: string };
@@ -354,7 +357,82 @@ const initialActions: SceneAction[] = [
   { id: "investigate", name: "调查线索", desc: "消耗线索点推进谜团或主线真相。" },
 ];
 
+function cloneMainPlot(worldType: string): PlotValues | null {
+  const defaults = getWorldDefault(worldType);
+  return defaults ? { ...defaults.mainPlot } : null;
+}
+
+function cloneCharacterLines(worldType: string, gender: WorldSettings["gender"]): CharacterPlotLine[] | null {
+  const defaults = getWorldDefault(worldType);
+  if (!defaults || gender !== "female") return null;
+
+  return defaults.characterLines.map((line) => ({
+    ...line,
+    values: { ...line.values },
+  }));
+}
+
+function cloneScenes(worldType: string) {
+  const defaults = getWorldDefault(worldType);
+  if (!defaults) return null;
+
+  return {
+    locations: defaults.locations.map((location) => ({
+      ...location,
+      times: [...location.times],
+      roles: [...location.roles],
+    })),
+    actions: initialActions.map((action) => ({ ...action })),
+  };
+}
+
+function cloneHeroes(worldType: string): HeroCharacter[] | null {
+  const defaults = getWorldDefault(worldType);
+  if (!defaults) return null;
+
+  return defaults.heroes.map((hero) => ({
+    id: hero.id,
+    name: hero.name,
+    age: hero.age,
+    outerTags: [...hero.outerTags],
+    innerTags: [...hero.innerTags],
+    identity: hero.identity,
+    appearance: hero.appearance,
+    intro: hero.intro,
+  }));
+}
+
+function buildWorldDefaultPatch(worldType: string, gender: WorldSettings["gender"]) {
+  const defaults = getWorldDefault(worldType);
+  const nextScenes = cloneScenes(worldType);
+  const nextHeroes = cloneHeroes(worldType);
+  const patch: Partial<EditorState> = {
+    gameName: defaults?.gameName ?? GAME_NAMES[worldType] ?? "",
+    mechTypes: defaultMechanics(worldType),
+    mainPlot: cloneMainPlot(worldType) ?? buildMainPlot(worldType, 0),
+    characterLines: cloneCharacterLines(worldType, gender) ?? buildCharacterLines(gender, 0),
+    locations: nextScenes?.locations ?? buildScenes(worldType, 0).locations,
+    actions: nextScenes?.actions ?? buildScenes(worldType, 0).actions,
+  };
+
+  if (nextHeroes && gender === "female") {
+    patch.heroes = nextHeroes;
+    patch.activeHeroId = nextHeroes[0]?.id ?? "";
+  }
+
+  if (defaults && gender === "female") {
+    patch.femaleHeroineType = defaults.heroine.typeId;
+    patch.femaleHeroineIdentity = defaults.heroine.identity;
+    patch.femaleHeroineAppearance = defaults.heroine.appearance;
+  }
+
+  return patch;
+}
+
 function buildMainPlot(worldType: string, seed: number): PlotValues {
+  const defaultPlot = cloneMainPlot(worldType);
+  if (defaultPlot) return defaultPlot;
+
   const outlines = OUTLINES_MAP[worldType] ?? DEFAULT_OUTLINES;
   const outline = outlines[seed % outlines.length] ?? outlines[0];
   return {
@@ -386,6 +464,9 @@ function buildCharacterLines(gender: WorldSettings["gender"], seed: number) {
 }
 
 function buildScenes(worldType: string, seed: number) {
+  const defaultScenes = cloneScenes(worldType);
+  if (defaultScenes) return defaultScenes;
+
   const ancient = worldType.includes("宫") || worldType.includes("帝") || worldType.includes("将");
   const nameSets = ancient
     ? [
@@ -421,6 +502,11 @@ function defaultMechanics(worldType: string): GameTypeId[] {
   const openOnly = recommended.filter((id) => id === "romance" || id === "raising");
   return openOnly.length ? openOnly : ["romance", "raising"];
 }
+
+const initialWorldPatch = buildWorldDefaultPatch(
+  initialWorldSettings.worldType,
+  initialWorldSettings.gender,
+);
 
 const toProjectState = (state: EditorState): PersistedEditorState => ({
   mode: state.mode,
@@ -471,27 +557,27 @@ export const useEditorStore = create<EditorState>()(
   step: "world",
   done: [],
   worldSettings: initialWorldSettings,
-  gameName: GAME_NAMES[initialWorldSettings.worldType],
+  gameName: initialWorldPatch.gameName ?? GAME_NAMES[initialWorldSettings.worldType],
   worldOutlineSeed: 0,
-  mechTypes: WORLD_MECHANIC_MAP[initialWorldSettings.worldType] ?? ["romance"],
+  mechTypes: initialWorldPatch.mechTypes ?? defaultMechanics(initialWorldSettings.worldType),
   artStyle: "cn_fine",
   proportion: "slim",
-  heroes: initialHeroes,
-  activeHeroId: initialHeroes[0].id,
+  heroes: initialWorldPatch.heroes ?? initialHeroes,
+  activeHeroId: initialWorldPatch.activeHeroId ?? initialHeroes[0].id,
   maleHeroType: "yx",
   maleHeroAge: "22",
   maleHeroIdentity: "不受宠的边缘皇子，从冷宫与废墟中重新组织自己的势力。",
   maleHeroAppearance: "身形修长，眉目沉静，常穿不起眼的深色衣袍，腰间藏着旧玉佩。",
   heroines: initialHeroines,
   activeHeroineId: initialHeroines[0].id,
-  femaleHeroineType: "dv",
+  femaleHeroineType: initialWorldPatch.femaleHeroineType ?? "dv",
   femaleHeroineAge: "21",
-  femaleHeroineIdentity: "出身普通却不愿被命运安排，正在为自己争取真正的选择权。",
-  femaleHeroineAppearance: "眉眼清亮，身形利落，衣着简洁但有锋芒。",
-  mainPlot: initialMainPlot,
-  characterLines: initialFemaleLines,
-  locations: initialLocations,
-  actions: initialActions,
+  femaleHeroineIdentity: initialWorldPatch.femaleHeroineIdentity ?? "出身普通却不愿被命运安排，正在为自己争取真正的选择权。",
+  femaleHeroineAppearance: initialWorldPatch.femaleHeroineAppearance ?? "眉眼清亮，身形利落，衣着简洁但有锋芒。",
+  mainPlot: initialWorldPatch.mainPlot ?? initialMainPlot,
+  characterLines: initialWorldPatch.characterLines ?? initialFemaleLines,
+  locations: initialWorldPatch.locations ?? initialLocations,
+  actions: initialWorldPatch.actions ?? initialActions,
   totalDays: "30",
   sceneStages: initialStages,
   setHasHydrated: (hasHydrated) => set({ hasHydrated }),
@@ -505,24 +591,21 @@ export const useEditorStore = create<EditorState>()(
   setWorldSettings: (worldSettings) =>
     set({
       worldSettings,
-      gameName: GAME_NAMES[worldSettings.worldType] ?? get().gameName,
-      mechTypes: WORLD_MECHANIC_MAP[worldSettings.worldType] ?? get().mechTypes,
+      ...buildWorldDefaultPatch(worldSettings.worldType, worldSettings.gender),
     }),
   setGameName: (gameName) => set({ gameName }),
   generateWorldOutline: () =>
     set((state) => {
       const nextSeed = state.worldOutlineSeed + 1;
-      const nextMechanics = defaultMechanics(state.worldSettings.worldType);
-      const nextScenes = buildScenes(state.worldSettings.worldType, nextSeed);
+      const defaultPatch = buildWorldDefaultPatch(
+        state.worldSettings.worldType,
+        state.worldSettings.gender,
+      );
 
       return {
+        ...defaultPatch,
         worldOutlineSeed: nextSeed,
-        gameName: getGeneratedGameName(state.worldSettings.worldType, nextSeed),
-        mechTypes: nextMechanics,
-        mainPlot: buildMainPlot(state.worldSettings.worldType, nextSeed),
-        characterLines: buildCharacterLines(state.worldSettings.gender, nextSeed),
-        locations: nextScenes.locations,
-        actions: nextScenes.actions,
+        gameName: defaultPatch.gameName ?? getGeneratedGameName(state.worldSettings.worldType, nextSeed),
       };
     }),
   generateMechanics: () =>
@@ -587,8 +670,10 @@ export const useEditorStore = create<EditorState>()(
   generateActiveHero: () =>
     set((state) => {
       const activeHero = state.heroes.find((hero) => hero.id === state.activeHeroId) ?? state.heroes[0];
-      const currentIndex = heroPool.findIndex((hero) => hero.name === activeHero.name);
-      const nextHero = heroPool[(Math.max(currentIndex, 0) + 1) % heroPool.length];
+      const worldHeroes = cloneHeroes(state.worldSettings.worldType);
+      const sourcePool = worldHeroes?.length ? worldHeroes : heroPool;
+      const currentIndex = sourcePool.findIndex((hero) => hero.name === activeHero.name);
+      const nextHero = sourcePool[(Math.max(currentIndex, 0) + 1) % sourcePool.length];
       return {
         heroes: state.heroes.map((hero) =>
           hero.id === activeHero.id ? { ...nextHero, id: hero.id } : hero,
@@ -652,6 +737,14 @@ export const useEditorStore = create<EditorState>()(
     }),
   generateFemaleHeroineSetting: () =>
     set((state) => {
+      const defaults = getWorldDefault(state.worldSettings.worldType);
+      if (defaults && state.worldSettings.gender === "female") {
+        return {
+          femaleHeroineType: defaults.heroine.typeId,
+          femaleHeroineIdentity: defaults.heroine.identity,
+          femaleHeroineAppearance: defaults.heroine.appearance,
+        };
+      }
       const seed = state.worldOutlineSeed + state.femaleHeroineAge.length;
       const variants = [
         {
@@ -847,6 +940,11 @@ export const useEditorStore = create<EditorState>()(
       ? "已检查当前配置：核心内容已经具备，可以继续逐页确认并补充细节。"
       : "已收到，我会把这条要求用于当前页的内容调整。";
   },
+  applyWorldPatch: (patch) =>
+    set((state) => ({
+      gameName: patch.gameName ?? state.gameName,
+      mainPlot: patch.mainPlot ? { ...state.mainPlot, ...patch.mainPlot } : state.mainPlot,
+    })),
   exportProject: () => {
     const snapshot: ProjectSnapshot = {
       app: "unfold",
@@ -893,44 +991,29 @@ export const useEditorStore = create<EditorState>()(
   selectGender: (gender) => {
     const era = "ancient";
     const worldType = WORLDS[gender][era][0];
-    const nextScenes = buildScenes(worldType, 0);
 
     set({
       worldSettings: { gender, era, worldType },
-      gameName: GAME_NAMES[worldType] ?? "",
-      mechTypes: defaultMechanics(worldType),
-      mainPlot: buildMainPlot(worldType, 0),
-      characterLines: buildCharacterLines(gender, 0),
-      locations: nextScenes.locations,
-      actions: nextScenes.actions,
+      worldOutlineSeed: 0,
+      ...buildWorldDefaultPatch(worldType, gender),
     });
   },
   selectEra: (era) => {
     const { gender } = get().worldSettings;
     const worldType = WORLDS[gender][era][0];
-    const nextScenes = buildScenes(worldType, 0);
 
     set({
       worldSettings: { gender, era, worldType },
-      gameName: GAME_NAMES[worldType] ?? "",
-      mechTypes: defaultMechanics(worldType),
-      mainPlot: buildMainPlot(worldType, 0),
-      characterLines: buildCharacterLines(gender, 0),
-      locations: nextScenes.locations,
-      actions: nextScenes.actions,
+      worldOutlineSeed: 0,
+      ...buildWorldDefaultPatch(worldType, gender),
     });
   },
   selectWorldType: (worldType) =>
     set((state) => {
-      const nextScenes = buildScenes(worldType, state.worldOutlineSeed);
       return {
         worldSettings: { ...state.worldSettings, worldType },
-        gameName: GAME_NAMES[worldType] ?? state.gameName,
-        mechTypes: defaultMechanics(worldType),
-        mainPlot: buildMainPlot(worldType, state.worldOutlineSeed),
-        characterLines: buildCharacterLines(state.worldSettings.gender, state.worldOutlineSeed),
-        locations: nextScenes.locations,
-        actions: nextScenes.actions,
+        worldOutlineSeed: 0,
+        ...buildWorldDefaultPatch(worldType, state.worldSettings.gender),
       };
     }),
   markDone: (step) =>

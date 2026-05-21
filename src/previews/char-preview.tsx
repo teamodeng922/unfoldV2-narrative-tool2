@@ -27,7 +27,9 @@ function Portrait({ hero, index }: { hero: HeroCharacter; index: number }) {
         <p className="mt-1 text-[12px] text-[#2F8CFF]">
           {hero.outerTags.join("、")} · {hero.innerTags.join("、")}
         </p>
-        <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-white/62">{hero.identity}</p>
+        <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-white/62">
+          {hero.intro ?? hero.identity}
+        </p>
       </div>
     </article>
   );

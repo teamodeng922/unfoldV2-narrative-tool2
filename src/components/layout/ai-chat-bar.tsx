@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useEditorStore } from "@/src/stores/editor-store";
-import type { StepId } from "@/src/types";
+import type { StepId, WorldAiPatch } from "@/src/types";
 
 type ChatMessage = {
   id: number;
@@ -60,9 +60,14 @@ const stepPrompts: Record<StepId, { intro: string; placeholder: string; reply: s
 
 export function AiChatBar() {
   const step = useEditorStore((state) => state.step);
+  const worldSettings = useEditorStore((state) => state.worldSettings);
+  const gameName = useEditorStore((state) => state.gameName);
+  const mainPlot = useEditorStore((state) => state.mainPlot);
   const applyAiInstruction = useEditorStore((state) => state.applyAiInstruction);
+  const applyWorldPatch = useEditorStore((state) => state.applyWorldPatch);
   const prompt = useMemo(() => stepPrompts[step], [step]);
   const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
   const [messagesByStep, setMessagesByStep] = useState<Partial<Record<StepId, ChatMessage[]>>>(
     {},
   );
@@ -74,17 +79,67 @@ export function AiChatBar() {
     },
   ];
 
-  const sendMessage = () => {
+  const requestWorldAi = async (text: string) => {
+    const response = await fetch("/api/ai/world", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: text,
+        context: {
+          worldSettings,
+          gameName,
+          mainPlot,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("world-ai-failed");
+    }
+
+    const result = (await response.json()) as { reply?: string; patch?: WorldAiPatch };
+    if (!result.reply || !result.patch) {
+      throw new Error("world-ai-invalid");
+    }
+
+    applyWorldPatch(result.patch);
+    return result.reply;
+  };
+
+  const sendMessage = async () => {
     const text = message.trim();
-    if (!text) return;
+    if (!text || isSending) return;
 
     const nextId = Date.now();
-    const reply = applyAiInstruction(text);
     setMessagesByStep((current) => ({
       ...current,
       [step]: [
         ...(current[step] ?? [{ id: 0, role: "ai", text: prompt.intro }]),
         { id: nextId, role: "user", text },
+      ],
+    }));
+    setMessage("");
+    setIsSending(true);
+
+    let reply = "";
+    try {
+      reply = step === "world" ? await requestWorldAi(text) : applyAiInstruction(text);
+    } catch {
+      const fallbackReply = applyAiInstruction(text);
+      reply =
+        step === "world"
+          ? `${fallbackReply}（真实 AI 暂不可用，已先用本地规则调整。）`
+          : fallbackReply;
+    } finally {
+      setIsSending(false);
+    }
+
+    setMessagesByStep((current) => ({
+      ...current,
+      [step]: [
+        ...(current[step] ?? [{ id: 0, role: "ai", text: prompt.intro }]),
         {
           id: nextId + 1,
           role: "ai",
@@ -92,7 +147,6 @@ export function AiChatBar() {
         },
       ],
     }));
-    setMessage("");
   };
 
   return (
@@ -129,7 +183,7 @@ export function AiChatBar() {
             onKeyDown={(event) => {
               if (event.key === "Enter") {
                 event.preventDefault();
-                sendMessage();
+                void sendMessage();
               }
             }}
             placeholder=""
@@ -138,15 +192,16 @@ export function AiChatBar() {
         </div>
         <button
           type="button"
-          onClick={sendMessage}
+          onClick={() => void sendMessage()}
+          disabled={isSending}
           className={[
             "h-11 w-[112px] shrink-0 rounded-md border px-4 text-[13px] font-semibold transition",
-            message.trim()
+            message.trim() && !isSending
               ? "border-[#2F8CFF]/65 bg-[#0D2B52] text-white shadow-[0_0_18px_rgba(47,140,255,0.28)] hover:bg-[#123967]"
               : "border-[#2F8CFF]/18 bg-[#111827] text-white/42",
           ].join(" ")}
         >
-          发送
+          {isSending ? "生成中" : "发送"}
         </button>
         </div>
       </div>

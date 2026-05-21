@@ -110,6 +110,9 @@ export function ScenePanel({ mode }: ScenePanelProps) {
                     <p className="mt-1 text-[13px] text-white/38">
                       {location.times.join(" / ")} · {location.roles.join("、")}
                     </p>
+                    {location.effect ? (
+                      <p className="mt-1 text-[13px] text-[#2F8CFF]/80">{location.effect}</p>
+                    ) : null}
                   </div>
                   {mode === "pro" ? (
                     <span className="inline-flex items-center gap-1 text-[13px] text-[#38D5FF]">
@@ -136,6 +139,8 @@ export function ScenePanel({ mode }: ScenePanelProps) {
                     </div>
                     <FieldLabel>开放条件</FieldLabel>
                     <input value={location.condition} onChange={(event) => updateLocation(location.id, { condition: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
+                    <FieldLabel>地点效果</FieldLabel>
+                    <input value={location.effect ?? ""} onChange={(event) => updateLocation(location.id, { effect: event.target.value })} className="mb-4 h-9 w-full rounded-lg border border-white/[0.10] bg-[#111217] px-3 text-[14px] text-white/70 outline-none focus:border-[#2F8CFF]/45" />
                     <FieldLabel>可出现角色</FieldLabel>
                     <div className="mb-4 flex flex-wrap gap-2">
                       {roleOptions.map((role) => (
